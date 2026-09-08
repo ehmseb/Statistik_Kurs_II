@@ -143,6 +143,22 @@ code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:var(--sur
 /* Theme toggle */
 .theme-btn{position:fixed;top:12px;right:16px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:.78rem;cursor:pointer;color:var(--muted);z-index:200;font-family:'Source Sans 3',sans-serif}
 .theme-btn:hover{color:var(--text)}
+/* Downloads sidebar */
+.sidebar-downloads{padding:12px 16px 20px;border-top:1px solid var(--border);margin-top:auto}
+.sidebar-downloads .kurs-label{margin-bottom:10px}
+.dl-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;text-decoration:none;color:var(--text);transition:background .15s;margin-bottom:4px}
+.dl-item:hover{background:var(--surface-2)}
+.dl-icon{font-size:1.2rem;flex-shrink:0;width:24px;text-align:center}
+.dl-info{display:flex;flex-direction:column;min-width:0}
+.dl-name{font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dl-sub{font-size:.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace;letter-spacing:.02em}
+/* Download callout in main */
+.dl-callout{display:flex;gap:12px;background:var(--accent-dim);border:1px solid color-mix(in srgb,var(--accent) 30%,var(--border));border-radius:var(--radius);padding:16px 20px;margin:24px 0;flex-wrap:wrap}
+.dl-callout-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:6px;font-size:.88rem;font-weight:600;text-decoration:none;transition:opacity .15s;white-space:nowrap}
+.dl-callout-btn:hover{opacity:.85}
+.dl-callout-btn.primary{background:var(--accent);color:#fff}
+.dl-callout-btn.secondary{background:var(--surface);border:1px solid var(--border);color:var(--text)}
+.dl-callout-label{font-size:.8rem;color:var(--muted);align-self:center;flex:1;min-width:160px}
 /* Responsive */
 @media(max-width:700px){
   .sidebar{display:none}
@@ -162,6 +178,30 @@ code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:var(--sur
   </div>
   <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
   <nav class="nav-list" id="navList"></nav>
+  <div class="sidebar-downloads">
+    <div class="kurs-label">Materialien</div>
+    <a href="theorie.html" class="dl-item" target="_blank">
+      <span class="dl-icon">📄</span>
+      <span class="dl-info">
+        <span class="dl-name">Theorie-Dokument</span>
+        <span class="dl-sub">HTML · im Browser öffnen</span>
+      </span>
+    </a>
+    <a href="Statistik-Theorie-NWW.docx" class="dl-item" download>
+      <span class="dl-icon">📝</span>
+      <span class="dl-info">
+        <span class="dl-name">Theorie als Word</span>
+        <span class="dl-sub">.docx · herunterladen</span>
+      </span>
+    </a>
+    <a href="Creme-Studie_Statistik.xlsx" class="dl-item" download>
+      <span class="dl-icon">📊</span>
+      <span class="dl-info">
+        <span class="dl-name">Excel-Arbeitsmappe</span>
+        <span class="dl-sub">.xlsx · 7 Blätter</span>
+      </span>
+    </a>
+  </div>
 </div>
 
 <main class="main">
@@ -175,6 +215,13 @@ code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:var(--sur
   <div class="callout">
     <strong>Was euch erwartet:</strong> ~4 Stunden, 6 Lernmodule, viele Beispiele mit echten Daten – und am Ende analysiert ihr eure eigenen Messdaten.<br><br>
     Jedes Modul endet mit einem <strong>Wissenscheck</strong>. Erst wenn ihr mindestens 80 % der Fragen richtig beantwortet habt, geht es weiter.
+  </div>
+
+  <div class="dl-callout">
+    <span class="dl-callout-label">📚 <strong>Begleitmaterialien</strong> zum Kurs herunterladen:</span>
+    <a href="theorie.html" class="dl-callout-btn primary" target="_blank">📄 Theorie-Dokument</a>
+    <a href="Statistik-Theorie-NWW.docx" class="dl-callout-btn secondary" download>📝 Word-Datei (.docx)</a>
+    <a href="Creme-Studie_Statistik.xlsx" class="dl-callout-btn secondary" download>📊 Excel-Tabelle (.xlsx)</a>
   </div>
 
   <h2>Unser roter Faden: Die Creme-Studie</h2>
