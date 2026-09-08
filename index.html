@@ -1,0 +1,1766 @@
+<title>Statistik – Forschungswoche</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Source+Sans+3:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+:root {
+  --bg:#F4F6FA;--surface:#FFFFFF;--surface-2:#EBF0F9;
+  --border:#C9D6EA;--text:#1A2842;--muted:#5A7090;
+  --accent:#2C5FA8;--accent-dim:#D0DDF5;
+  --nominal:#4D8F6A;--ordinal:#C97624;--metric:#2C5FA8;
+  --correct:#3C8058;--wrong:#B83232;
+  --correct-bg:#EAF5EF;--wrong-bg:#FDEAEA;
+  --sidebar-w:260px;--radius:8px;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111A28;--surface:#192338;--surface-2:#1E2C42;
+  --border:#2A3F5C;--text:#DCE8F5;--muted:#7A9ABB;
+  --accent:#4D82D6;--accent-dim:#1C3060;
+  --nominal:#5AAD7E;--ordinal:#D99040;--metric:#4D82D6;
+  --correct:#4DAA78;--wrong:#D95050;
+  --correct-bg:#0E2919;--wrong-bg:#2A0F0F;
+}}
+:root[data-theme="dark"]{
+  --bg:#111A28;--surface:#192338;--surface-2:#1E2C42;
+  --border:#2A3F5C;--text:#DCE8F5;--muted:#7A9ABB;
+  --accent:#4D82D6;--accent-dim:#1C3060;
+  --nominal:#5AAD7E;--ordinal:#D99040;--metric:#4D82D6;
+  --correct:#4DAA78;--wrong:#D95050;
+  --correct-bg:#0E2919;--wrong-bg:#2A0F0F;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',sans-serif;font-size:16px;line-height:1.65;display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100}
+.sidebar-header{padding:24px 20px 16px;border-bottom:1px solid var(--border)}
+.kurs-label{font-size:10px;font-family:'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.sidebar-header h1{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;line-height:1.2}
+.sidebar-header p{font-size:.8rem;color:var(--muted);margin-top:4px}
+.nav-list{padding:12px 0;flex:1}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;font-size:.88rem;color:var(--muted);border-left:3px solid transparent;transition:all .15s}
+.nav-item:hover{background:var(--surface-2);color:var(--text)}
+.nav-item.active{background:var(--accent-dim);color:var(--accent);border-left-color:var(--accent);font-weight:600}
+.nav-item.done .nav-num{background:var(--correct);color:#fff}
+.nav-item.locked{opacity:.4;cursor:default;pointer-events:none}
+.nav-num{width:22px;height:22px;border-radius:50%;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.nav-item.active .nav-num{background:var(--accent);color:#fff}
+.nav-label{flex:1}
+.main{margin-left:var(--sidebar-w);flex:1;padding:48px 56px;max-width:860px}
+.module{display:none}
+.module.active{display:block}
+.module-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.module-title{font-family:'Fraunces',serif;font-size:2rem;font-weight:700;line-height:1.2;margin-bottom:6px;text-wrap:balance}
+.module-desc{color:var(--muted);font-size:1rem;margin-bottom:36px}
+h2{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:600;margin:36px 0 12px;text-wrap:balance}
+h3{font-family:'Source Sans 3',sans-serif;font-size:1.05rem;font-weight:700;margin:24px 0 8px}
+p{margin-bottom:12px}
+strong{font-weight:700}
+em{font-style:italic}
+ul,ol{padding-left:1.4em;margin-bottom:12px}
+li{margin-bottom:4px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.callout{border-left:4px solid var(--accent);background:var(--accent-dim);border-radius:0 var(--radius) var(--radius) 0;padding:16px 20px;margin:20px 0}
+.callout.example{border-left-color:var(--ordinal);background:color-mix(in srgb,var(--ordinal) 10%,var(--surface))}
+.callout.tip{border-left-color:var(--nominal);background:color-mix(in srgb,var(--nominal) 10%,var(--surface))}
+.type-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:.78rem;font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:.04em}
+.badge-nominal{background:color-mix(in srgb,var(--nominal) 15%,var(--surface));color:var(--nominal)}
+.badge-ordinal{background:color-mix(in srgb,var(--ordinal) 15%,var(--surface));color:var(--ordinal)}
+.badge-metric{background:color-mix(in srgb,var(--metric) 15%,var(--surface));color:var(--metric)}
+.data-grid{display:grid;gap:12px;margin:16px 0}
+.data-grid.cols-3{grid-template-columns:repeat(3,1fr)}
+.data-cell{background:var(--surface);border:2px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center}
+.data-cell .label{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
+.data-cell .value{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700}
+/* Sort exercise */
+.sort-exercise{margin:20px 0}
+.sort-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;min-height:40px;padding:8px;background:var(--surface-2);border-radius:var(--radius);border:1px dashed var(--border)}
+.chip{padding:6px 14px;border-radius:20px;background:var(--surface);border:2px solid var(--border);cursor:pointer;font-size:.85rem;transition:all .15s;user-select:none}
+.chip:hover{border-color:var(--accent)}
+.chip.selected{border-color:var(--accent);background:var(--accent-dim);color:var(--accent);font-weight:600}
+.chip.placed{opacity:.4;cursor:default;pointer-events:none}
+.sort-zones{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.sort-zone{background:var(--surface);border:2px dashed var(--border);border-radius:var(--radius);padding:12px;min-height:120px;transition:border-color .15s}
+.sort-zone.n-zone{border-color:color-mix(in srgb,var(--nominal) 40%,var(--border))}
+.sort-zone.o-zone{border-color:color-mix(in srgb,var(--ordinal) 40%,var(--border))}
+.sort-zone.m-zone{border-color:color-mix(in srgb,var(--metric) 40%,var(--border))}
+.sort-zone h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:8px}
+.n-zone h4{color:var(--nominal)}
+.o-zone h4{color:var(--ordinal)}
+.m-zone h4{color:var(--metric)}
+.zone-chips{display:flex;flex-wrap:wrap;gap:6px;min-height:40px}
+.zone-chip{padding:4px 10px;border-radius:12px;font-size:.8rem;font-weight:600;cursor:pointer}
+.zone-chip.n-chip{background:color-mix(in srgb,var(--nominal) 15%,var(--surface));color:var(--nominal);border:1px solid var(--nominal)}
+.zone-chip.o-chip{background:color-mix(in srgb,var(--ordinal) 15%,var(--surface));color:var(--ordinal);border:1px solid var(--ordinal)}
+.zone-chip.m-chip{background:color-mix(in srgb,var(--metric) 15%,var(--surface));color:var(--metric);border:1px solid var(--metric)}
+/* Quiz */
+.quiz-section{margin:36px 0}
+.quiz-section h2{margin-top:0}
+.question{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.question p.q-text{font-weight:600;margin-bottom:14px}
+.options{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border:2px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;font-size:.92rem}
+.opt:hover{border-color:var(--accent);background:var(--accent-dim)}
+.opt.correct{border-color:var(--correct);background:var(--correct-bg);cursor:default}
+.opt.wrong{border-color:var(--wrong);background:var(--wrong-bg);cursor:default}
+.opt.disabled{cursor:default;opacity:.6}
+.opt-icon{font-size:1rem;margin-top:1px;flex-shrink:0}
+.feedback{margin-top:10px;padding:10px 14px;border-radius:6px;font-size:.88rem;display:none}
+.feedback.show{display:block}
+.feedback.correct{background:var(--correct-bg);color:var(--correct)}
+.feedback.wrong{background:var(--wrong-bg);color:var(--wrong)}
+/* Step exercise */
+.step-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin:20px 0;overflow:hidden}
+.step-header{background:var(--surface-2);padding:14px 20px;border-bottom:1px solid var(--border);font-weight:700;font-size:.95rem}
+.step-body{padding:20px}
+.step-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0}
+.step-content{flex:1}
+.reveal-btn{background:var(--accent);color:#fff;border:none;padding:8px 18px;border-radius:6px;cursor:pointer;font-size:.85rem;font-family:'Source Sans 3',sans-serif;margin-top:8px}
+.reveal-btn:hover{opacity:.9}
+.revealed{display:none}
+.revealed.show{display:block;margin-top:8px}
+.highlight-box{background:var(--surface-2);border-radius:6px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:.9rem;margin-top:6px}
+/* Nav buttons */
+.btn-row{display:flex;gap:12px;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+.btn{padding:11px 24px;border-radius:6px;border:none;cursor:pointer;font-family:'Source Sans 3',sans-serif;font-size:.95rem;font-weight:600;transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{opacity:.9}
+.btn-secondary{background:var(--surface-2);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--border)}
+/* Progress */
+.progress-bar{height:3px;background:var(--border);border-radius:2px;margin:0 20px 8px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s}
+/* Stats display */
+.stat-row{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.stat-pill{background:var(--surface-2);border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:.85rem}
+.stat-pill strong{color:var(--accent)}
+/* Table */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:var(--surface-2);font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.05em}
+tr:last-child td{border-bottom:none}
+/* Inline code */
+code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:var(--surface-2);padding:1px 5px;border-radius:3px}
+/* Theme toggle */
+.theme-btn{position:fixed;top:12px;right:16px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:.78rem;cursor:pointer;color:var(--muted);z-index:200;font-family:'Source Sans 3',sans-serif}
+.theme-btn:hover{color:var(--text)}
+/* Responsive */
+@media(max-width:700px){
+  .sidebar{display:none}
+  .main{margin-left:0;padding:24px 20px}
+  .sort-zones{grid-template-columns:1fr}
+  .data-grid.cols-3{grid-template-columns:1fr}
+}
+</style>
+
+<button class="theme-btn" onclick="toggleTheme()">🌓 Theme</button>
+
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="kurs-label">NWW · KSK Kreuzlingen</div>
+    <h1>Statistik</h1>
+    <p>Forschungswoche</p>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+  <nav class="nav-list" id="navList"></nav>
+</div>
+
+<main class="main">
+
+<!-- ═══════════════ MODULE 0: EINFÜHRUNG ═══════════════ -->
+<section class="module active" id="mod0">
+  <div class="module-eyebrow">Modul 0</div>
+  <h1 class="module-title">Willkommen zur Statistik-Werkzeugkiste</h1>
+  <p class="module-desc">In dieser Forschungswoche werdet ihr statistische Methoden kennenlernen – und direkt auf eure eigene Forschungsfrage anwenden.</p>
+
+  <div class="callout">
+    <strong>Was euch erwartet:</strong> ~4 Stunden, 6 Lernmodule, viele Beispiele mit echten Daten – und am Ende analysiert ihr eure eigenen Messdaten.<br><br>
+    Jedes Modul endet mit einem <strong>Wissenscheck</strong>. Erst wenn ihr mindestens 80 % der Fragen richtig beantwortet habt, geht es weiter.
+  </div>
+
+  <h2>Unser roter Faden: Die Creme-Studie</h2>
+  <p>Durch alle Module begleitet uns eine echte Frage: <strong>Wird Creme 1 von den Testpersonen besser bewertet als Creme 4?</strong></p>
+  <p>20 Personen haben vier Cremes auf einer Skala von 1–9 bewertet. Diese Daten werden wir Schritt für Schritt analysieren.</p>
+
+  <div class="card">
+    <div class="kurs-label" style="margin-bottom:8px">Creme-Daten (Auszug)</div>
+    <table>
+      <thead><tr><th>Person</th><th>Creme 1</th><th>Creme 2</th><th>Creme 3</th><th>Creme 4</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>7</td><td>5</td><td>6</td><td>4</td></tr>
+        <tr><td>2</td><td>8</td><td>6</td><td>7</td><td>3</td></tr>
+        <tr><td>3</td><td>6</td><td>7</td><td>5</td><td>5</td></tr>
+        <tr><td>4</td><td>9</td><td>4</td><td>8</td><td>2</td></tr>
+        <tr><td>5</td><td>7</td><td>6</td><td>6</td><td>6</td></tr>
+        <tr><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:.85rem;color:var(--muted);margin:0">Skala: 1 = sehr schlecht, 9 = sehr gut. Alle 20 Messwerte findet ihr in eurem Excel-File.</p>
+  </div>
+
+  <h2>Überblick: Was werden wir lernen?</h2>
+  <div class="data-grid cols-3" style="grid-template-columns:repeat(2,1fr)">
+    <div class="data-cell"><div class="label">Modul 1</div><div style="font-size:.95rem;font-weight:600">Datentypen</div><div style="font-size:.82rem;color:var(--muted)">Nominal · Ordinal · Metrisch</div></div>
+    <div class="data-cell"><div class="label">Modul 2</div><div style="font-size:.95rem;font-weight:600">Lageparameter</div><div style="font-size:.82rem;color:var(--muted)">Modalwert · Median · Mittelwert</div></div>
+    <div class="data-cell"><div class="label">Modul 3</div><div style="font-size:.95rem;font-weight:600">Streuung</div><div style="font-size:.82rem;color:var(--muted)">Standardabw. · Boxplot</div></div>
+    <div class="data-cell"><div class="label">Modul 4</div><div style="font-size:.95rem;font-weight:600">Normalverteilung</div><div style="font-size:.82rem;color:var(--muted)">Gaußkurve · Shapiro-Wilk</div></div>
+    <div class="data-cell"><div class="label">Modul 5</div><div style="font-size:.95rem;font-weight:600">Signifikanz & Tests</div><div style="font-size:.82rem;color:var(--muted)">t-Test · Mann-Whitney · Chi²</div></div>
+    <div class="data-cell"><div class="label">Modul 6</div><div style="font-size:.95rem;font-weight:600">Dein Projekt</div><div style="font-size:.82rem;color:var(--muted)">Analyse & Forschungsfrage</div></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="completeAndGo(0,1)">Los geht's → Modul 1</button>
+  </div>
+</section>
+
+<!-- ═══════════════ MODULE 1: DATENTYPEN ═══════════════ -->
+<section class="module" id="mod1">
+  <div class="module-eyebrow">Modul 1</div>
+  <h1 class="module-title">Datentypen: Nominal, Ordinal, Metrisch</h1>
+  <p class="module-desc">Bevor wir irgendetwas berechnen können, müssen wir wissen: Was für Daten haben wir überhaupt?</p>
+
+  <h2>Warum ist das wichtig?</h2>
+  <p>Nicht jede Messung ist gleich. Eine Postleitzahl ist zwar eine Zahl – aber es macht keinen Sinn, zwei Postleitzahlen zu addieren oder einen Durchschnitt zu berechnen. Den Unterschied zwischen Datentypen zu kennen, verhindert sinnlose Berechnungen.</p>
+
+  <h2>Die drei Datentypen</h2>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <span class="type-badge badge-nominal">NOMINAL</span>
+      <strong>Kategorien ohne Rangordnung</strong>
+    </div>
+    <p>Nominale Daten sind <strong>Etiketten</strong>. Man kann sie benennen und zählen – aber nicht in eine sinnvolle Reihenfolge bringen.</p>
+    <p><strong>Beispiele:</strong> Blutgruppe (A, B, AB, 0) · Augenfarbe · Lieblingsfarbe · Geschlecht · Wohnort</p>
+    <div class="callout example">
+      <strong>Merkhilfe:</strong> Stell dir vor, du sortierst T-Shirts nach Farbe in Boxen. Rot ist nicht «besser» als Blau – es ist einfach anders.
+    </div>
+    <p><strong>Was kann man damit tun?</strong> Man kann die Häufigkeit jeder Kategorie zählen: «Wie viele Personen haben Blutgruppe A?» Das ist alles, was erlaubt ist.</p>
+    <p><strong>Was geht nicht?</strong> Eine sinnvolle Reihenfolge bilden, rechnen oder Abstände bestimmen.</p>
+    <div class="callout tip">
+      <strong>Creme-Beispiel (nominal):</strong> Man fragt 20 Testpersonen: «Welche Creme gefällt euch am besten?» Ergebnis: Creme 1 (12×), Creme 3 (5×), Creme 2 (2×), Creme 4 (1×). Diese Angaben sind nominal – man darf nur zählen. Creme 1 gewinnt, weil sie am häufigsten genannt wird.
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <span class="type-badge badge-ordinal">ORDINAL</span>
+      <strong>Kategorien mit Rangordnung</strong>
+    </div>
+    <p>Ordinale Daten haben eine <strong>sinnvolle Reihenfolge</strong> – aber die Abstände zwischen den Werten sind nicht gleich gross oder messbar.</p>
+    <p><strong>Beispiele:</strong> Schulnoten (1–6) · Zufriedenheitsskalen (sehr unzufrieden → sehr zufrieden) · T-Shirt-Grössen (S, M, L, XL) · Platzierungen bei Wettkämpfen</p>
+    <div class="callout example">
+      <strong>Merkhilfe:</strong> Bei einer Bewertungsskala von 1–9 ist 5 besser als 3. Aber ob der Unterschied zwischen 3 und 5 «gleich gross» ist wie zwischen 7 und 9 – das wissen wir nicht.
+    </div>
+    <p><strong>Was kann man damit tun?</strong> Vergleichen (grösser/kleiner), in eine Rangreihe bringen.</p>
+    <p><strong>Was geht nicht?</strong> Abstände messen oder berechnen – weil die Abstände zwischen den Stufen nicht garantiert gleich gross sind.</p>
+    <div class="callout tip">
+      <strong>Creme-Beispiel:</strong> Die Bewertungen auf der Skala 1–9 sind ordinal. «7 ist besser als 4» stimmt. Aber ob die Person mit 7 «gleich viel mehr begeistert» ist als von 4, verglichen mit einer 9 gegenüber einer 6 – das können wir nicht wissen.
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <span class="type-badge badge-metric">METRISCH</span>
+      <strong>Zahlen mit gleichmässigen Abständen</strong>
+    </div>
+    <p>Metrische Daten sind «echte» Zahlen: Die Abstände zwischen Werten sind <strong>definiert und gleich</strong>. Man darf mit ihnen rechnen.</p>
+    <p><strong>Beispiele:</strong> Körpergrösse (cm) · Gewicht (kg) · Temperatur (°C) · Zeit (s) · pH-Wert</p>
+    <div class="callout example">
+      <strong>Merkhilfe:</strong> 20 °C ist genau 10 Grad wärmer als 10 °C – und genau gleich viel wärmer wie 30 °C gegenüber 20 °C. Das macht metrische Daten so mächtig.
+    </div>
+    <p><strong>Was kann man damit tun?</strong> Alles – addieren, subtrahieren, dividieren, multiplizieren. Alle statistischen Masse sind erlaubt (welche das sind, lernst du in Modul 2 und 3).</p>
+    <div class="callout tip">
+      <strong>Creme-Beispiel (metrisch):</strong> Man lässt eine Creme 30 Sekunden einwirken und misst danach das Volumen des entstandenen Schaums in Millilitern. Creme A: 45 ml, Creme B: 28 ml. Der Unterschied (45 − 28 = 17 ml) ist exakt definiert – das macht diese Messung metrisch. Rechnen ist hier vollständig erlaubt.
+    </div>
+  </div>
+
+  <h2>Zusammenfassung</h2>
+  <table>
+    <thead><tr><th>Eigenschaft</th><th>Nominal</th><th>Ordinal</th><th>Metrisch</th></tr></thead>
+    <tbody>
+      <tr><td>Kategorien benennbar</td><td>✓</td><td>✓</td><td>✓</td></tr>
+      <tr><td>Rangordnung möglich</td><td>✗</td><td>✓</td><td>✓</td></tr>
+      <tr><td>Abstände gleich gross</td><td>✗</td><td>✗</td><td>✓</td></tr>
+      <tr><td>Rechnen erlaubt</td><td>✗</td><td>✗</td><td>✓</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Übung: Daten einordnen</h2>
+  <p>Klicke zuerst auf ein Variable (grauer Chip), dann auf die richtige Zone. Du kannst auch einen falsch platzierten Chip zurückklicken.</p>
+
+  <div class="sort-exercise" id="sortEx">
+    <div class="sort-chips" id="chipPool"></div>
+    <div class="sort-zones">
+      <div class="sort-zone n-zone" onclick="zoneClick('nominal')">
+        <h4>Nominal</h4>
+        <div class="zone-chips" id="zone-nominal"></div>
+      </div>
+      <div class="sort-zone o-zone" onclick="zoneClick('ordinal')">
+        <h4>Ordinal</h4>
+        <div class="zone-chips" id="zone-ordinal"></div>
+      </div>
+      <div class="sort-zone m-zone" onclick="zoneClick('metric')">
+        <h4>Metrisch</h4>
+        <div class="zone-chips" id="zone-metric"></div>
+      </div>
+    </div>
+    <div id="sortFeedback" style="margin-top:12px;display:none"></div>
+    <button class="reveal-btn" onclick="checkSort()" style="margin-top:12px">Auswertung anzeigen</button>
+  </div>
+
+  <div class="quiz-section">
+    <h2>Wissenscheck</h2>
+
+    <div class="question" id="q1_1">
+      <p class="q-text">1. Welcher Datentyp liegt vor, wenn Schülerinnen ihre Lieblingsfarbe angeben?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q1_1',this,false,'Ordinal hätte eine Rangordnung – Farben haben keine sinnvolle Reihenfolge.')"><span class="opt-icon">○</span> Ordinal</div>
+        <div class="opt" onclick="answerQ('q1_1',this,true,'Richtig! Farben sind Kategorien ohne Rangordnung = nominal.')"><span class="opt-icon">○</span> Nominal</div>
+        <div class="opt" onclick="answerQ('q1_1',this,false,'Metrisch bedeutet gleichmässige Abstände – bei Farben gibt es keine Zahlen.')"><span class="opt-icon">○</span> Metrisch</div>
+      </div>
+      <div class="feedback" id="q1_1-fb"></div>
+    </div>
+
+    <div class="question" id="q1_2">
+      <p class="q-text">2. Die Bewertung einer Creme auf einer Skala von 1–9. Welcher Datentyp?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q1_2',this,false,'Nominal hat keine Rangordnung – bei dieser Skala ist 9 besser als 1.')"><span class="opt-icon">○</span> Nominal</div>
+        <div class="opt" onclick="answerQ('q1_2',this,true,'Richtig! Eine Bewertungsskala hat eine Rangordnung, aber wir können nicht sagen, ob der Unterschied zwischen 3 und 5 gleich gross ist wie zwischen 7 und 9 → ordinal.')"><span class="opt-icon">○</span> Ordinal</div>
+        <div class="opt" onclick="answerQ('q1_2',this,false,'Metrisch wäre es, wenn wir sicher wüssten, dass alle Abstände gleich gross sind.')"><span class="opt-icon">○</span> Metrisch</div>
+      </div>
+      <div class="feedback" id="q1_2-fb"></div>
+    </div>
+
+    <div class="question" id="q1_3">
+      <p class="q-text">3. Die Körpergrösse von Schülerinnen in Zentimeter. Welcher Datentyp?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q1_3',this,false,'Nominal hat keine Rangordnung – bei Grössen ist 180 cm eindeutig grösser als 160 cm.')"><span class="opt-icon">○</span> Nominal</div>
+        <div class="opt" onclick="answerQ('q1_3',this,false,'Ordinal würde bedeuten, die Abstände wären nicht gleich gross. Aber 1 cm ist immer 1 cm.')"><span class="opt-icon">○</span> Ordinal</div>
+        <div class="opt" onclick="answerQ('q1_3',this,true,'Richtig! Körpergrösse in cm ist metrisch: gleichmässige Abstände, Rechnen erlaubt.')"><span class="opt-icon">○</span> Metrisch</div>
+      </div>
+      <div class="feedback" id="q1_3-fb"></div>
+    </div>
+
+    <div class="question" id="q1_4">
+      <p class="q-text">4. Welche der folgenden Variablen ist <em>ordinal</em>?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q1_4',this,false,'Blutgruppe (A, B, AB, 0) hat keine Rangordnung → nominal.')"><span class="opt-icon">○</span> Blutgruppe (A, B, AB, 0)</div>
+        <div class="opt" onclick="answerQ('q1_4',this,true,'Richtig! Schulnoten haben eine Rangordnung (6 ist besser als 1), aber die Abstände sind nicht garantiert gleich gross.')"><span class="opt-icon">○</span> Schulnoten (1–6)</div>
+        <div class="opt" onclick="answerQ('q1_4',this,false,'Raumtemperatur in °C ist metrisch – gleichmässige Abstände, Rechnen möglich.')"><span class="opt-icon">○</span> Raumtemperatur in °C</div>
+      </div>
+      <div class="feedback" id="q1_4-fb"></div>
+    </div>
+
+    <div class="question" id="q1_5">
+      <p class="q-text">5. Welche Aussage über nominale Daten ist korrekt?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q1_5',this,false,'Bei nominalen Daten darf man keine sinnvolle Rangordnung bilden – das ist das Merkmal von ordinalen Daten.')"><span class="opt-icon">○</span> Man kann nominale Daten in eine sinnvolle Rangordnung bringen.</div>
+        <div class="opt" onclick="answerQ('q1_5',this,false,'Den Mittelwert berechnet man aus Zahlenwerten – bei Kategorien wie Augenfarbe geht das nicht.')"><span class="opt-icon">○</span> Man kann den Mittelwert nominaler Daten berechnen.</div>
+        <div class="opt" onclick="answerQ('q1_5',this,true,'Richtig! Bei nominalen Daten darf man Häufigkeiten zählen – zum Beispiel: «15 von 30 Personen haben blaue Augen».')"><span class="opt-icon">○</span> Man kann Häufigkeiten zählen, zum Beispiel wie viele Personen eine bestimmte Kategorie gewählt haben.</div>
+      </div>
+      <div class="feedback" id="q1_5-fb"></div>
+    </div>
+  </div>
+
+  <div id="m1-gate" style="display:none" class="callout">
+    <strong>Gut gemacht!</strong> Du kannst jetzt zu Modul 2 weitergehen.
+    <div class="btn-row" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <button class="btn btn-primary" onclick="completeAndGo(1,2)">→ Modul 2: Lageparameter</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ MODULE 2: LAGEPARAMETER ═══════════════ -->
+<section class="module" id="mod2">
+  <div class="module-eyebrow">Modul 2</div>
+  <h1 class="module-title">Lageparameter: Modalwert, Median & Mittelwert</h1>
+  <p class="module-desc">Wie beschreibe ich einen ganzen Datensatz mit einer einzigen Zahl? Diese drei Masse geben verschiedene Antworten auf diese Frage.</p>
+
+  <h2>Das Problem: Viele Zahlen, eine Aussage</h2>
+  <p>Stell dir vor, du hast 20 Creme-Bewertungen: <code>7, 8, 6, 9, 7, 7, 5, 8, 6, 7, 9, 6, 8, 7, 5, 6, 8, 7, 9, 7</code>. Wie erklärt man jemandem in einem Satz, wie die Creme bewertet wurde? Man braucht einen <strong>Lageparameter</strong> – eine Zahl, die die «Mitte» oder den «typischen Wert» der Daten beschreibt.</p>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <span class="type-badge badge-nominal">MODALWERT</span>
+      <strong>Der häufigste Wert</strong>
+    </div>
+    <p>Der <strong>Modalwert</strong> (auch: Modus) ist einfach der Wert, der am häufigsten vorkommt.</p>
+    <div class="callout example">
+      <strong>Beispiel:</strong> In einer Klasse fragen wir nach der Lieblingsfarbe: Blau (8×), Grün (5×), Rot (4×), Gelb (3×).<br>
+      → Der Modalwert ist <strong>Blau</strong>, weil es am häufigsten genannt wurde.
+    </div>
+    <p><strong>Wann verwenden?</strong> Immer – auch bei nominalen Daten, wo kein anderes Lagemass erlaubt ist.</p>
+    <p><strong>Vorteil:</strong> Sehr einfach zu bestimmen, kein Rechnen nötig, funktioniert bei allen Datentypen.</p>
+    <p><strong>Nachteil:</strong> Sagt nichts über die Verteilung der anderen Werte aus. Es kann auch mehrere Modi geben.</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <span class="type-badge badge-ordinal">MEDIAN</span>
+      <strong>Der mittlere Wert</strong>
+    </div>
+    <p>Der <strong>Median</strong> ist der Wert, der genau in der Mitte liegt, wenn man alle Werte der Grösse nach sortiert. Die Hälfte der Werte liegt darunter, die andere Hälfte darüber.</p>
+    <div class="callout example">
+      <strong>Beispiel mit 7 Werten:</strong><br>
+      Unsortiert: <code>7, 3, 9, 5, 6, 4, 8</code><br>
+      Sortiert: <code>3, 4, 5, <strong>6</strong>, 7, 8, 9</code><br>
+      → Der 4. Wert (von 7) steht in der Mitte: Median = <strong>6</strong>
+    </div>
+    <div class="callout example">
+      <strong>Was bei einer geraden Anzahl?</strong><br>
+      Bei 8 Werten gibt es zwei mittlere Werte – man nimmt deren Durchschnitt:<br>
+      <code>3, 4, 5, <strong>6, 7</strong>, 8, 9, 10</code> → Median = (6+7)/2 = <strong>6.5</strong>
+    </div>
+    <p><strong>Wann verwenden?</strong> Bei ordinalen und metrischen Daten – besonders wenn Ausreisser (extreme Werte) vorhanden sind.</p>
+    <p><strong>Stärke des Medians:</strong> Er ist <strong>robust gegenüber Ausreissern</strong>. Ein extremer Wert kann den Median kaum verändern.</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <span class="type-badge badge-metric">MITTELWERT</span>
+      <strong>Der Durchschnitt</strong>
+    </div>
+    <p>Den <strong>Mittelwert</strong> (auch: Durchschnitt, arithmetisches Mittel, x̄ «x-quer») kennt ihr alle: alle Werte addieren, durch die Anzahl der Werte dividieren.</p>
+    <div class="callout example">
+      <strong>Formel:</strong> x̄ = (x₁ + x₂ + … + xₙ) / n<br><br>
+      <strong>Beispiel:</strong> Werte: <code>2, 4, 6, 6, 8, 8, 8</code><br>
+      x̄ = (2+4+6+6+8+8+8) / 7 = 42 / 7 = <strong>6.0</strong>
+    </div>
+    <p><strong>Wann verwenden?</strong> Nur bei metrischen Daten – und nur wenn keine starken Ausreisser vorhanden sind.</p>
+    <p><strong>Schwäche:</strong> Der Mittelwert reagiert <strong>sehr empfindlich auf Ausreisser</strong>.</p>
+  </div>
+
+  <h2>Der Bill-Gates-Effekt: Wenn der Mittelwert lügt</h2>
+  <p>Stell dir eine Bar mit 10 Stammgästen vor. Das durchschnittliche Einkommen beträgt 50 000 CHF/Jahr. Dann kommt Bill Gates (Vermögen: Milliarden) herein. Plötzlich steigt das «Durchschnittseinkommen» der Bar auf mehrere Millionen – obwohl alle anderen Gäste genau gleich viel verdienen wie vorher.</p>
+
+  <div class="callout">
+    <strong>Regel:</strong> Wenn Ausreisser vorhanden sind oder die Daten stark einseitig verteilt sind, ist der <strong>Median ehrlicher</strong> als der Mittelwert. Das Medianeinkommen der Schweiz ist ein viel besserer Indikator für den «typischen» Lohn als das Durchschnittseinkommen.
+  </div>
+
+  <!-- Interactive outlier visualization -->
+  <h2>Interaktiv: Der Ausreisser-Effekt</h2>
+  <p>Verschiebe den <strong>roten Punkt</strong> und beobachte, wie sich die drei Lageparameter verändern. Was passiert mit dem Mittelwert, wenn der Ausreisser sehr gross wird?</p>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0">
+    <!-- Number line SVG -->
+    <div style="position:relative;height:80px;margin-bottom:12px">
+      <svg id="outlierSvg" width="100%" height="80" style="display:block;overflow:visible" viewBox="0 0 600 80" preserveAspectRatio="xMidYMid meet">
+        <!-- axis line -->
+        <line x1="30" y1="50" x2="570" y2="50" stroke="var(--border)" stroke-width="2"/>
+        <!-- tick marks & labels drawn by JS -->
+        <g id="axisTicks"></g>
+        <!-- fixed data points -->
+        <g id="fixedPoints"></g>
+        <!-- outlier point -->
+        <circle id="outlierDot" cx="30" cy="50" r="10" fill="var(--wrong)" stroke="white" stroke-width="2" style="cursor:ew-resize;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))"/>
+        <!-- mean line -->
+        <line id="meanLine" x1="30" y1="28" x2="30" y2="72" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="4 3"/>
+        <!-- median line -->
+        <line id="medianLine" x1="30" y1="28" x2="30" y2="72" stroke="var(--correct)" stroke-width="2.5"/>
+      </svg>
+    </div>
+
+    <!-- Slider -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <span style="font-size:.85rem;color:var(--muted);white-space:nowrap">Ausreisser:</span>
+      <input type="range" id="outlierSlider" min="1" max="40" value="8" step="1"
+        style="flex:1;accent-color:var(--wrong)">
+      <span id="outlierVal" style="font-family:'JetBrains Mono',monospace;font-size:.95rem;min-width:2.5rem;text-align:right;color:var(--wrong)">8</span>
+    </div>
+
+    <!-- Stats display -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+      <div style="background:var(--surface-2);border-radius:6px;padding:14px;text-align:center">
+        <div style="font-size:.78rem;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">Modalwert</div>
+        <div id="dispModus" style="font-family:'JetBrains Mono',monospace;font-size:1.35rem;font-weight:700;color:var(--text)">–</div>
+      </div>
+      <div style="background:var(--surface-2);border-radius:6px;padding:14px;text-align:center;position:relative">
+        <div style="font-size:.78rem;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">Median</div>
+        <div id="dispMedian" style="font-family:'JetBrains Mono',monospace;font-size:1.35rem;font-weight:700;color:var(--correct)">–</div>
+        <div style="width:14px;height:4px;background:var(--correct);border-radius:2px;margin:6px auto 0"></div>
+      </div>
+      <div style="background:var(--surface-2);border-radius:6px;padding:14px;text-align:center;position:relative">
+        <div style="font-size:.78rem;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">Mittelwert</div>
+        <div id="dispMittel" style="font-family:'JetBrains Mono',monospace;font-size:1.35rem;font-weight:700;color:var(--accent)">–</div>
+        <div style="width:14px;height:4px;background:var(--accent);border-radius:2px;margin:6px auto 0;border-style:dashed"></div>
+      </div>
+    </div>
+
+    <!-- hint message -->
+    <div id="outlierHint" style="margin-top:12px;font-size:.88rem;color:var(--muted);min-height:1.4em;text-align:center"></div>
+  </div>
+
+  <script>
+  (function(){
+    const FIXED = [4, 6, 7, 7, 8]; // fixed data points
+    const MIN_VAL = 1, MAX_VAL = 40;
+    const SVG_LEFT = 30, SVG_RIGHT = 570;
+    const SVG_W = SVG_RIGHT - SVG_LEFT;
+
+    function valToX(v){ return SVG_LEFT + (v - MIN_VAL)/(MAX_VAL - MIN_VAL) * SVG_W; }
+
+    // build axis ticks
+    const tickG = document.getElementById('axisTicks');
+    for(let v = 5; v <= 40; v += 5){
+      const x = valToX(v);
+      tickG.innerHTML += `<line x1="${x}" y1="47" x2="${x}" y2="53" stroke="var(--muted)" stroke-width="1.5"/>
+        <text x="${x}" y="65" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="JetBrains Mono,monospace">${v}</text>`;
+    }
+    // axis label at 1
+    tickG.innerHTML += `<text x="${valToX(1)}" y="65" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="JetBrains Mono,monospace">1</text>`;
+
+    // draw fixed points
+    const fpG = document.getElementById('fixedPoints');
+    FIXED.forEach(v => {
+      const x = valToX(v);
+      fpG.innerHTML += `<circle cx="${x}" cy="50" r="8" fill="var(--muted)" stroke="white" stroke-width="1.5" opacity=".7"/>`;
+    });
+
+    function calcStats(outlier){
+      const all = [...FIXED, outlier].sort((a,b)=>a-b);
+      const n = all.length;
+      // mean
+      const mean = all.reduce((s,v)=>s+v,0)/n;
+      // median
+      const median = n%2===0 ? (all[n/2-1]+all[n/2])/2 : all[Math.floor(n/2)];
+      // mode
+      const freq = {};
+      all.forEach(v=>{ freq[v]=(freq[v]||0)+1; });
+      const maxF = Math.max(...Object.values(freq));
+      const modes = Object.keys(freq).filter(k=>freq[k]===maxF).map(Number).sort((a,b)=>a-b);
+      const modeStr = maxF===1 ? 'keiner' : modes.join(', ');
+      return { mean, median, modeStr };
+    }
+
+    function update(){
+      const outlier = +document.getElementById('outlierSlider').value;
+      document.getElementById('outlierVal').textContent = outlier;
+
+      // move dot
+      const x = valToX(outlier);
+      document.getElementById('outlierDot').setAttribute('cx', x);
+
+      const { mean, median, modeStr } = calcStats(outlier);
+
+      // update lines — clamp to SVG bounds
+      const clamp = v => Math.max(SVG_LEFT, Math.min(SVG_RIGHT, v));
+      const mx = clamp(valToX(mean));
+      const mdx = clamp(valToX(median));
+      document.getElementById('meanLine').setAttribute('x1', mx);
+      document.getElementById('meanLine').setAttribute('x2', mx);
+      document.getElementById('medianLine').setAttribute('x1', mdx);
+      document.getElementById('medianLine').setAttribute('x2', mdx);
+
+      document.getElementById('dispModus').textContent = modeStr;
+      document.getElementById('dispMedian').textContent = median % 1 === 0 ? median : median.toFixed(1);
+      document.getElementById('dispMittel').textContent = mean.toFixed(2);
+
+      // hint
+      const hint = document.getElementById('outlierHint');
+      if(outlier > 15){
+        hint.textContent = '⚠️ Der Mittelwert wird stark nach oben gezogen, der Median bleibt fast gleich!';
+        hint.style.color = 'var(--wrong)';
+      } else if(outlier <= 3){
+        hint.textContent = '⚠️ Kleiner Ausreisser: Der Mittelwert sinkt, der Median kaum.';
+        hint.style.color = 'var(--ordinal)';
+      } else {
+        hint.textContent = 'Schiebe den roten Punkt ganz nach rechts (Ausreisser ≥ 20) und beobachte den Unterschied.';
+        hint.style.color = 'var(--muted)';
+      }
+    }
+
+    document.getElementById('outlierSlider').addEventListener('input', update);
+
+    // drag support on SVG dot
+    const dot = document.getElementById('outlierDot');
+    const svg = document.getElementById('outlierSvg');
+    let dragging = false;
+    dot.addEventListener('mousedown', e=>{ dragging=true; e.preventDefault(); });
+    dot.addEventListener('touchstart', e=>{ dragging=true; }, {passive:true});
+    svg.addEventListener('mousemove', e=>{
+      if(!dragging) return;
+      const rect = svg.getBoundingClientRect();
+      const px = e.clientX - rect.left;
+      const ratio = (px - SVG_LEFT * rect.width/600) / (SVG_W * rect.width/600);
+      const v = Math.round(MIN_VAL + ratio*(MAX_VAL-MIN_VAL));
+      const clamped = Math.max(MIN_VAL, Math.min(MAX_VAL, v));
+      document.getElementById('outlierSlider').value = clamped;
+      update();
+    });
+    svg.addEventListener('touchmove', e=>{
+      if(!dragging) return;
+      const rect = svg.getBoundingClientRect();
+      const px = e.touches[0].clientX - rect.left;
+      const ratio = (px - SVG_LEFT * rect.width/600) / (SVG_W * rect.width/600);
+      const v = Math.round(MIN_VAL + ratio*(MAX_VAL-MIN_VAL));
+      const clamped = Math.max(MIN_VAL, Math.min(MAX_VAL, v));
+      document.getElementById('outlierSlider').value = clamped;
+      update();
+    }, {passive:true});
+    window.addEventListener('mouseup', ()=>{ dragging=false; });
+    window.addEventListener('touchend', ()=>{ dragging=false; });
+
+    update();
+  })();
+  </script>
+
+  <h2>Übung: Schritt für Schritt berechnen</h2>
+  <p>Berechnet die drei Lageparameter für diesen kleinen Datensatz: <strong>2, 4, 8, 8, 6, 8, 6</strong></p>
+
+  <div class="step-box">
+    <div class="step-header">Schritt-für-Schritt-Anleitung</div>
+    <div class="step-body">
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>Werte der Grösse nach sortieren</strong>
+          <button class="reveal-btn" onclick="revealStep('s1')">Lösung zeigen</button>
+          <div class="revealed" id="s1">
+            <div class="highlight-box">Sortiert: 2, 4, 6, 6, 8, 8, 8</div>
+            <p style="margin-top:8px;font-size:.88rem">Wir haben 7 Werte (n = 7).</p>
+          </div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>Modalwert bestimmen: Welcher Wert kommt am häufigsten vor?</strong>
+          <button class="reveal-btn" onclick="revealStep('s2')">Lösung zeigen</button>
+          <div class="revealed" id="s2">
+            <div class="highlight-box">2 → 1×, 4 → 1×, 6 → 2×, <strong>8 → 3×</strong> ← am häufigsten!<br>Modalwert = 8</div>
+          </div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>Median bestimmen: Welcher Wert steht an Position (n+1)/2?</strong>
+          <button class="reveal-btn" onclick="revealStep('s3')">Lösung zeigen</button>
+          <div class="revealed" id="s3">
+            <div class="highlight-box">n = 7, Mittelposition = (7+1)/2 = 4. Position<br>Sortiert: 2, 4, 6, [<strong>6</strong>], 8, 8, 8<br>Median = 6</div>
+          </div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>Mittelwert berechnen: Summe ÷ Anzahl</strong>
+          <button class="reveal-btn" onclick="revealStep('s4')">Lösung zeigen</button>
+          <div class="revealed" id="s4">
+            <div class="highlight-box">x̄ = (2+4+6+6+8+8+8) / 7 = 42 / 7 = 6.0</div>
+            <p style="margin-top:8px;font-size:.88rem">Hier sind Modalwert (8), Median (6) und Mittelwert (6) alle unterschiedlich – interessant!</p>
+          </div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <strong>Bonus: Was passiert, wenn der letzte Wert (8) durch 80 ersetzt wird?</strong>
+          <button class="reveal-btn" onclick="revealStep('s5')">Ausreisser-Effekt zeigen</button>
+          <div class="revealed" id="s5">
+            <div class="highlight-box">Neue Daten: 2, 4, 6, 6, 8, 8, <strong>80</strong><br><br>
+Sortiert: 2, 4, 6, [<strong>6</strong>], 8, 8, 80<br>
+Median = 6 (unverändert!)<br><br>
+x̄ = (2+4+6+6+8+8+80) / 7 = 114 / 7 ≈ <strong>16.3</strong> (stark verändert!)</div>
+            <div class="callout" style="margin-top:8px">Der Median bleibt bei 6 – er «ignoriert» den Ausreisser praktisch. Der Mittelwert springt von 6 auf 16.3 – er reagiert sehr stark!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-section">
+    <h2>Wissenscheck</h2>
+
+    <div class="question" id="q2_1">
+      <p class="q-text">1. Welches Lagemass ist bei nominalen Daten (z.B. Augenfarbe) erlaubt?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q2_1',this,false,'Den Mittelwert kann man nur bei Zahlen berechnen – Kategorien kann man nicht addieren.')"><span class="opt-icon">○</span> Mittelwert</div>
+        <div class="opt" onclick="answerQ('q2_1',this,false,'Den Median zu bestimmen setzt voraus, dass man Werte in eine Rangordnung bringen kann – das ist bei nominalen Daten nicht möglich.')"><span class="opt-icon">○</span> Median</div>
+        <div class="opt" onclick="answerQ('q2_1',this,true,'Richtig! Der Modalwert ist der einzige Lageparameter, der bei nominalen Daten erlaubt ist – er zählt einfach, welcher Wert am häufigsten vorkommt.')"><span class="opt-icon">○</span> Modalwert</div>
+      </div>
+      <div class="feedback" id="q2_1-fb"></div>
+    </div>
+
+    <div class="question" id="q2_2">
+      <p class="q-text">2. Datensatz: 3, 7, 7, 9, 11, 11, 11, 15. Was ist der Modalwert?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q2_2',this,false,'9 kommt nur einmal vor – schau, welcher Wert am häufigsten vorkommt.')"><span class="opt-icon">○</span> 9</div>
+        <div class="opt" onclick="answerQ('q2_2',this,true,'Richtig! 11 kommt dreimal vor – öfter als jeder andere Wert.')"><span class="opt-icon">○</span> 11</div>
+        <div class="opt" onclick="answerQ('q2_2',this,false,'Das wäre der Mittelwert, nicht der Modalwert.')"><span class="opt-icon">○</span> 9.25</div>
+      </div>
+      <div class="feedback" id="q2_2-fb"></div>
+    </div>
+
+    <div class="question" id="q2_3">
+      <p class="q-text">3. Datensatz: 1, 3, 5, 7, 9, 11. Was ist der Median?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q2_3',this,false,'6 ist korrekt – schau nochmals: bei 6 Werten gibt es zwei mittlere Werte (3. und 4. Position). Der Durchschnitt von 5 und 7 ist (5+7)/2 = 6.')"><span class="opt-icon">○</span> 5</div>
+        <div class="opt" onclick="answerQ('q2_3',this,true,'Richtig! Bei 6 Werten sind die mittleren Positionen 3 und 4: Werte sind 5 und 7. Median = (5+7)/2 = 6.')"><span class="opt-icon">○</span> 6</div>
+        <div class="opt" onclick="answerQ('q2_3',this,false,'6.33 wäre der Mittelwert (36/6). Der Median ist etwas anderes.')"><span class="opt-icon">○</span> 6.33</div>
+      </div>
+      <div class="feedback" id="q2_3-fb"></div>
+    </div>
+
+    <div class="question" id="q2_4">
+      <p class="q-text">4. Ein Ausreisser (sehr extremer Wert) beeinflusst hauptsächlich welches Lagemass stark?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q2_4',this,false,'Den Modalwert interessiert nur, welcher Wert am häufigsten vorkommt – ein Ausreisser ändert das meist nicht.')"><span class="opt-icon">○</span> Modalwert</div>
+        <div class="opt" onclick="answerQ('q2_4',this,false,'Der Median ist sehr robust – ein extremer Wert verschiebt den Mittelpunkt kaum.')"><span class="opt-icon">○</span> Median</div>
+        <div class="opt" onclick="answerQ('q2_4',this,true,'Richtig! Der Mittelwert reagiert sehr empfindlich auf extreme Werte, weil er alle Werte gleichwertig einbezieht (Bill-Gates-Effekt).')"><span class="opt-icon">○</span> Mittelwert</div>
+      </div>
+      <div class="feedback" id="q2_4-fb"></div>
+    </div>
+
+    <div class="question" id="q2_5">
+      <p class="q-text">5. Welches Lagemass ist am besten geeignet für das «typische» Gehalt in einer Firma, in der die meisten Mitarbeitenden 60 000–80 000 CHF verdienen, aber die CEO 5 000 000 CHF?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q2_5',this,false,'Der Mittelwert würde durch das Riesengehalt der CEO stark nach oben gezogen – er würde ein verfälschtes Bild geben.')"><span class="opt-icon">○</span> Mittelwert</div>
+        <div class="opt" onclick="answerQ('q2_5',this,true,'Richtig! Der Median ist robust gegenüber dem Ausreisser (CEO-Gehalt) und zeigt das typische Gehalt korrekt.')"><span class="opt-icon">○</span> Median</div>
+        <div class="opt" onclick="answerQ('q2_5',this,false,'Der Modalwert würde zeigen, welches genaue Gehalt am häufigsten vorkommt – bei kontinuierlichen Daten wie Gehalt oft wenig sinnvoll.')"><span class="opt-icon">○</span> Modalwert</div>
+      </div>
+      <div class="feedback" id="q2_5-fb"></div>
+    </div>
+  </div>
+
+  <div id="m2-gate" style="display:none" class="callout">
+    <strong>Sehr gut!</strong> Du kennst jetzt die drei Lageparameter. Weiter mit Streumassen!
+    <div class="btn-row" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <button class="btn btn-primary" onclick="completeAndGo(2,3)">→ Modul 3: Streuung</button>
+    </div>
+  </div>
+</section>
+<!-- ═══════════════ MODULE 3: STREUUNG ═══════════════ -->
+<section class="module" id="mod3">
+  <div class="module-eyebrow">Modul 3</div>
+  <h1 class="module-title">Streumasse: Standardabweichung & Boxplot</h1>
+  <p class="module-desc">Ein Lageparameter sagt, wo die Daten «liegen». Ein Streumass sagt, wie stark sie streuen – wie verschieden sie voneinander sind.</p>
+
+  <h2>Warum brauchen wir Streumasse?</h2>
+  <div class="callout example">
+    <strong>Zwei Kurse, gleicher Mittelwert:</strong><br>
+    Kurs A: 5, 5, 5, 5, 5, 5 → Mittelwert = 5<br>
+    Kurs B: 1, 3, 5, 5, 7, 9 → Mittelwert = 5<br><br>
+    Beide Kurse haben denselben Durchschnitt – aber Kurs A ist extrem einheitlich, Kurs B sehr vielfältig. Ohne Streumass würden wir diesen wichtigen Unterschied verpassen!
+  </div>
+
+  <h2>Die Standardabweichung: Die Dusche-Analogie</h2>
+  <p>Stell dir vor, du duschst täglich und misst jeden Tag die Wassertemperatur. Manchmal ist sie etwas zu warm, manchmal etwas zu kalt:</p>
+
+  <div class="card">
+    <div style="display:flex;gap:24px;flex-wrap:wrap">
+      <div style="flex:1;min-width:200px">
+        <div style="font-weight:700;color:var(--correct);margin-bottom:8px">Dusche A: Gut eingestellt</div>
+        <div style="display:flex;gap:4px;align-items:flex-end;height:80px;margin-bottom:8px">
+          <div style="width:20px;background:color-mix(in srgb,var(--correct) 60%,var(--surface));height:70px;border-radius:3px 3px 0 0"></div>
+          <div style="width:20px;background:color-mix(in srgb,var(--correct) 60%,var(--surface));height:80px;border-radius:3px 3px 0 0"></div>
+          <div style="width:20px;background:color-mix(in srgb,var(--correct) 60%,var(--surface));height:75px;border-radius:3px 3px 0 0"></div>
+          <div style="width:20px;background:color-mix(in srgb,var(--correct) 60%,var(--surface));height:72px;border-radius:3px 3px 0 0"></div>
+          <div style="width:20px;background:color-mix(in srgb,var(--correct) 60%,var(--surface));height:78px;border-radius:3px 3px 0 0"></div>
+        </div>
+        <div style="font-size:.85rem;color:var(--muted)">Temperaturen: 37°, 38°, 38°, 37°, 38°</div>
+        <div style="font-size:.88rem;margin-top:4px"><strong>SD ≈ 0.5°C</strong> – geringe Streuung</div>
+      </div>
+      <div style="flex:1;min-width:200px">
+        <div style="font-weight:700;color:var(--wrong);margin-bottom:8px">Dusche B: Schlecht eingestellt</div>
+        <div style="display:flex;gap:4px;align-items:flex-end;height:80px;margin-bottom:8px">
+          <div style="width:20px;background:color-mix(in srgb,var(--wrong) 60%,var(--surface));height:20px;border-radius:3px 3px 0 0"></div>
+          <div style="width:20px;background:color-mix(in srgb,var(--wrong) 60%,var(--surface));height:60px;border-radius:3px 3px 0 0"></div>
+          <div style="width:20px;background:color-mix(in srgb,var(--wrong) 60%,var(--surface));height:80px;border-radius:3px 3px 0 0"></div>
+          <div style="width:20px;background:color-mix(in srgb,var(--wrong) 60%,var(--surface));height:40px;border-radius:3px 3px 0 0"></div>
+          <div style="width:20px;background:color-mix(in srgb,var(--wrong) 60%,var(--surface));height:10px;border-radius:3px 3px 0 0"></div>
+        </div>
+        <div style="font-size:.85rem;color:var(--muted)">Temperaturen: 25°, 33°, 45°, 30°, 22°</div>
+        <div style="font-size:.88rem;margin-top:4px"><strong>SD ≈ 8.8°C</strong> – hohe Streuung</div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:16px;margin-bottom:0">
+      <strong>Faustregel:</strong> Je grösser die Standardabweichung (SD), desto mehr streuen die Werte um den Mittelwert herum. Eine kleine SD bedeutet: alle Werte liegen nahe beieinander. Eine grosse SD: die Werte sind weit verteilt.
+    </div>
+  </div>
+
+  <h2>Was bedeutet die Formel?</h2>
+  <p>Die Standardabweichung misst, wie weit die einzelnen Werte <em>im Durchschnitt</em> vom Mittelwert entfernt sind.</p>
+
+  <div class="card">
+    <div class="kurs-label" style="margin-bottom:8px">Berechnung Schritt für Schritt</div>
+    <p>Datensatz: <code>2, 4, 6, 6, 8, 8, 8</code> | Mittelwert x̄ = 6</p>
+    <table>
+      <thead><tr><th>Wert (x)</th><th>Abstand zum Mittelwert (x − x̄)</th><th>Quadrat (x − x̄)²</th></tr></thead>
+      <tbody>
+        <tr><td>2</td><td>2 − 6 = −4</td><td>(−4)² = 16</td></tr>
+        <tr><td>4</td><td>4 − 6 = −2</td><td>(−2)² = 4</td></tr>
+        <tr><td>6</td><td>6 − 6 = 0</td><td>0² = 0</td></tr>
+        <tr><td>6</td><td>6 − 6 = 0</td><td>0² = 0</td></tr>
+        <tr><td>8</td><td>8 − 6 = 2</td><td>2² = 4</td></tr>
+        <tr><td>8</td><td>8 − 6 = 2</td><td>2² = 4</td></tr>
+        <tr><td>8</td><td>8 − 6 = 2</td><td>2² = 4</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box" style="margin-top:12px">
+      Summe der Quadrate = 32<br>
+      Varianz = 32 / (7−1) = 32 / 6 ≈ 5.33<br>
+      Standardabweichung = √5.33 ≈ <strong>2.31</strong>
+    </div>
+    <p style="margin-top:8px;font-size:.88rem;color:var(--muted)">Wir teilen durch (n−1) und nicht durch n, weil wir eine <em>Stichprobe</em> analysieren (Stichprobenstandardabweichung). In Excel: <code>=STABW()</code></p>
+  </div>
+
+  <h2>Der Boxplot: Fünf Zahlen, ein Bild</h2>
+  <p>Ein Boxplot fasst die Verteilung eines Datensatzes mit fünf Kennzahlen zusammen. Aber zuerst müssen wir einen Begriff erklären:</p>
+
+  <div class="callout">
+    <strong>Was ist ein Perzentil?</strong><br>
+    Das <strong>p-te Perzentil</strong> ist der Wert, unter dem p% aller Messwerte liegen.<br>
+    Beispiel: Das 25. Perzentil (= 1. Quartil) ist der Wert, unter dem 25% der Daten liegen. Das 75. Perzentil ist der Wert, unter dem 75% der Daten liegen.<br>
+    <em>Der Median ist übrigens das 50. Perzentil – genau die Hälfte der Werte liegt darunter.</em>
+  </div>
+
+  <div class="card">
+    <div class="kurs-label" style="margin-bottom:8px">Die 5 Kennzahlen des Boxplots</div>
+    <table>
+      <thead><tr><th>Kennzahl</th><th>Bedeutung</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Minimum</strong></td><td>Kleinster Wert (ohne Ausreisser)</td></tr>
+        <tr><td><strong>Q1</strong> (1. Quartil, 25. Perzentil)</td><td>25% der Werte liegen darunter</td></tr>
+        <tr><td><strong>Median</strong> (Q2, 50. Perzentil)</td><td>50% der Werte liegen darunter</td></tr>
+        <tr><td><strong>Q3</strong> (3. Quartil, 75. Perzentil)</td><td>75% der Werte liegen darunter</td></tr>
+        <tr><td><strong>Maximum</strong></td><td>Grösster Wert (ohne Ausreisser)</td></tr>
+      </tbody>
+    </table>
+
+    <div style="margin:20px 0;background:var(--surface-2);border-radius:var(--radius);padding:24px 16px">
+      <svg viewBox="0 0 500 120" style="width:100%;display:block" aria-label="Boxplot Schaubild">
+        <!-- Achse -->
+        <line x1="40" y1="90" x2="460" y2="90" stroke="var(--border)" stroke-width="1.5"/>
+        <!-- Whisker links -->
+        <line x1="100" y1="60" x2="180" y2="60" stroke="var(--accent)" stroke-width="2"/>
+        <line x1="100" y1="50" x2="100" y2="70" stroke="var(--accent)" stroke-width="2"/>
+        <!-- Box -->
+        <rect x="180" y="42" width="160" height="36" fill="var(--accent-dim)" stroke="var(--accent)" stroke-width="2" rx="3"/>
+        <!-- Median Linie -->
+        <line x1="270" y1="42" x2="270" y2="78" stroke="var(--accent)" stroke-width="3"/>
+        <!-- Whisker rechts -->
+        <line x1="340" y1="60" x2="420" y2="60" stroke="var(--accent)" stroke-width="2"/>
+        <line x1="420" y1="50" x2="420" y2="70" stroke="var(--accent)" stroke-width="2"/>
+        <!-- Labels -->
+        <text x="100" y="108" text-anchor="middle" fill="var(--muted)" font-size="12" font-family="JetBrains Mono, monospace">Min</text>
+        <text x="180" y="108" text-anchor="middle" fill="var(--muted)" font-size="12" font-family="JetBrains Mono, monospace">Q1</text>
+        <text x="270" y="108" text-anchor="middle" fill="var(--accent)" font-size="12" font-weight="bold" font-family="JetBrains Mono, monospace">Median</text>
+        <text x="340" y="108" text-anchor="middle" fill="var(--muted)" font-size="12" font-family="JetBrains Mono, monospace">Q3</text>
+        <text x="420" y="108" text-anchor="middle" fill="var(--muted)" font-size="12" font-family="JetBrains Mono, monospace">Max</text>
+        <!-- IQR Label -->
+        <text x="260" y="30" text-anchor="middle" fill="var(--accent)" font-size="11" font-family="Source Sans 3, sans-serif">← IQR (Interquartilsabstand) →</text>
+      </svg>
+    </div>
+
+    <p><strong>IQR (Interquartilsabstand)</strong> = Q3 − Q1: Der Bereich, in dem die mittleren 50% der Daten liegen. Werte, die mehr als 1.5 × IQR über Q3 oder unter Q1 liegen, gelten als <em>Ausreisser</em> und werden als Punkte separat dargestellt.</p>
+  </div>
+
+  <h2>Welches Mass für welche Daten?</h2>
+  <p>Jetzt kennt ihr alle Lage- und Streumasse. Hier die vollständige Übersicht, <em>welches Mass wann erlaubt ist</em>:</p>
+
+  <table>
+    <thead>
+      <tr><th>Datentyp</th><th>Lageparameter</th><th>Streumass</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="type-badge badge-nominal">Nominal</span></td><td>Modalwert</td><td>Keine sinnvollen Streumasse</td></tr>
+      <tr><td><span class="type-badge badge-ordinal">Ordinal</span></td><td>Modalwert, Median</td><td>Bandbreite (Min–Max), Boxplot (Q1–Q3)</td></tr>
+      <tr><td><span class="type-badge badge-metric">Metrisch</span></td><td>Modalwert, Median, Mittelwert</td><td>Alle: Standardabweichung, Varianz, Boxplot</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Wichtig:</strong> Bei <em>ordinalen</em> Daten ist die Standardabweichung eigentlich nicht erlaubt – weil wir dafür echte Abstände bräuchten. Aber in der Praxis wird sie trotzdem oft berechnet (z.B. bei der Creme-Studie). Wenn ihr das tut, solltet ihr es erwähnen.
+  </div>
+
+  <div class="quiz-section">
+    <h2>Wissenscheck</h2>
+
+    <div class="question" id="q3_1">
+      <p class="q-text">1. Was misst die Standardabweichung?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q3_1',this,false,'Die Mitte der Daten ist der Mittelwert oder Median – nicht die Standardabweichung.')"><span class="opt-icon">○</span> Die Mitte der Daten</div>
+        <div class="opt" onclick="answerQ('q3_1',this,true,'Richtig! Die Standardabweichung gibt an, wie weit die Messwerte im Durchschnitt vom Mittelwert entfernt sind.')"><span class="opt-icon">○</span> Wie weit die Werte im Durchschnitt vom Mittelwert entfernt sind</div>
+        <div class="opt" onclick="answerQ('q3_1',this,false,'Den höchsten Wert nennt man Maximum – das hat nichts mit Standardabweichung zu tun.')"><span class="opt-icon">○</span> Den höchsten Wert im Datensatz</div>
+      </div>
+      <div class="feedback" id="q3_1-fb"></div>
+    </div>
+
+    <div class="question" id="q3_2">
+      <p class="q-text">2. Welche der folgenden Standardabweichungen zeigt eine grössere Streuung?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q3_2',this,false,'Eine kleinere SD bedeutet die Werte liegen enger beieinander – also weniger Streuung.')"><span class="opt-icon">○</span> SD = 0.8</div>
+        <div class="opt" onclick="answerQ('q3_2',this,true,'Richtig! Je grösser die SD, desto mehr streuen die Werte um den Mittelwert.')"><span class="opt-icon">○</span> SD = 4.5</div>
+        <div class="opt" onclick="answerQ('q3_2',this,false,'Beide SDs beschreiben genau eine Streuung – sie bedeuten nicht «gleich».')"><span class="opt-icon">○</span> Beide sind gleich</div>
+      </div>
+      <div class="feedback" id="q3_2-fb"></div>
+    </div>
+
+    <div class="question" id="q3_3">
+      <p class="q-text">3. Was ist das erste Quartil (Q1) eines Datensatzes?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q3_3',this,false,'Das 50. Perzentil ist der Median – nicht Q1.')"><span class="opt-icon">○</span> Der mittlere Wert (50. Perzentil)</div>
+        <div class="opt" onclick="answerQ('q3_3',this,true,'Richtig! Q1 ist das 25. Perzentil: 25% der Werte liegen darunter, 75% darüber.')"><span class="opt-icon">○</span> Der Wert, unter dem 25% der Daten liegen (25. Perzentil)</div>
+        <div class="opt" onclick="answerQ('q3_3',this,false,'Das ist Q3 (75. Perzentil) – nicht Q1.')"><span class="opt-icon">○</span> Der Wert, unter dem 75% der Daten liegen (75. Perzentil)</div>
+      </div>
+      <div class="feedback" id="q3_3-fb"></div>
+    </div>
+
+    <div class="question" id="q3_4">
+      <p class="q-text">4. Für welche Daten ist die Standardabweichung ein erlaubtes Streumass?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q3_4',this,false,'Für nominale Daten gibt es keine sinnvollen Streumasse – man kann nur Häufigkeiten zählen.')"><span class="opt-icon">○</span> Nominale Daten (z.B. Blutgruppe)</div>
+        <div class="opt" onclick="answerQ('q3_4',this,false,'Für ordinale Daten ist die SD eigentlich nicht erlaubt, weil gleichmässige Abstände fehlen.')"><span class="opt-icon">○</span> Ordinale Daten (z.B. Schulnoten)</div>
+        <div class="opt" onclick="answerQ('q3_4',this,true,'Richtig! Nur bei metrischen Daten sind alle Abstände definiert – daher ist die Standardabweichung hier korrekt anwendbar.')"><span class="opt-icon">○</span> Metrische Daten (z.B. Körpergrösse in cm)</div>
+      </div>
+      <div class="feedback" id="q3_4-fb"></div>
+    </div>
+
+    <div class="question" id="q3_5">
+      <p class="q-text">5. Der IQR (Interquartilsabstand) wird berechnet als…</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q3_5',this,false,'Maximum − Minimum wäre die Spannweite – nicht der IQR.')"><span class="opt-icon">○</span> Maximum − Minimum</div>
+        <div class="opt" onclick="answerQ('q3_5',this,false,'Mittelwert − Median ist kein Standardbegriff der Statistik.')"><span class="opt-icon">○</span> Mittelwert − Median</div>
+        <div class="opt" onclick="answerQ('q3_5',this,true,'Richtig! IQR = Q3 − Q1. Er beschreibt die Breite der mittleren 50% der Daten.')"><span class="opt-icon">○</span> Q3 − Q1</div>
+      </div>
+      <div class="feedback" id="q3_5-fb"></div>
+    </div>
+  </div>
+
+  <div id="m3-gate" style="display:none" class="callout">
+    <strong>Ausgezeichnet!</strong> Du kennst jetzt alle Lage- und Streumasse. Weiter zur Normalverteilung!
+    <div class="btn-row" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <button class="btn btn-primary" onclick="completeAndGo(3,4)">→ Modul 4: Normalverteilung</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ MODULE 4: NORMALVERTEILUNG ═══════════════ -->
+<section class="module" id="mod4">
+  <div class="module-eyebrow">Modul 4</div>
+  <h1 class="module-title">Normalverteilung: Die Glockenkurve</h1>
+  <p class="module-desc">Viele natürliche Messungen folgen einem typischen Muster – der Normalverteilung. Warum das wichtig ist, und wie wir es testen, lernt ihr hier.</p>
+
+  <h2>Was ist die Normalverteilung?</h2>
+  <p>Wenn man viele Menschen misst (z.B. Körpergrösse), findet man meist: Die meisten Werte liegen um die Mitte, und je extremer der Wert, desto seltener tritt er auf. Diese symmetrische «Glockenkurve» nennt man <strong>Normalverteilung</strong>.</p>
+
+  <div class="card">
+    <div style="background:var(--surface-2);border-radius:var(--radius);padding:20px">
+      <svg viewBox="0 0 560 210" style="width:100%;display:block" aria-label="Normalverteilung Glockenkurve">
+        <defs>
+          <linearGradient id="bellGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="var(--accent)" stop-opacity="0.05"/>
+          </linearGradient>
+        </defs>
+        <!-- Gaussian curve -->
+        <path d="M 60 155 C 95 155, 130 148, 165 128, 185 113, 205 80, 225 52, 248 28, 280 18, 312 28, 335 52, 355 80, 375 113, 395 128, 430 148, 465 155, 500 155" fill="url(#bellGrad)" stroke="var(--accent)" stroke-width="2.5" fill-opacity="1"/>
+        <!-- Axis line -->
+        <line x1="50" y1="155" x2="510" y2="155" stroke="var(--border)" stroke-width="1.5"/>
+        <!-- Mean line -->
+        <line x1="280" y1="18" x2="280" y2="155" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5,3"/>
+        <!-- ±1SD lines -->
+        <line x1="210" y1="52" x2="210" y2="155" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <line x1="350" y1="52" x2="350" y2="155" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <!-- 68% bracket below axis -->
+        <line x1="210" y1="165" x2="350" y2="165" stroke="var(--accent)" stroke-width="2"/>
+        <line x1="210" y1="160" x2="210" y2="170" stroke="var(--accent)" stroke-width="2"/>
+        <line x1="350" y1="160" x2="350" y2="170" stroke="var(--accent)" stroke-width="2"/>
+        <text x="280" y="180" text-anchor="middle" fill="var(--accent)" font-size="12" font-family="Source Sans 3, sans-serif" font-weight="600">≈ 68% der Daten</text>
+        <!-- x-axis labels — well spaced, below axis -->
+        <text x="210" y="198" text-anchor="middle" fill="var(--muted)" font-size="11" font-family="JetBrains Mono, monospace">x̄ − SD</text>
+        <text x="280" y="198" text-anchor="middle" fill="var(--accent)" font-size="12" font-family="JetBrains Mono, monospace" font-weight="700">x̄</text>
+        <text x="350" y="198" text-anchor="middle" fill="var(--muted)" font-size="11" font-family="JetBrains Mono, monospace">x̄ + SD</text>
+      </svg>
+    </div>
+    <div class="callout" style="margin-top:16px;margin-bottom:0">
+      <strong>Die 68-95-99.7-Regel:</strong> Bei einer Normalverteilung liegen etwa 68% aller Werte im Bereich x̄ ± 1 SD, 95% im Bereich x̄ ± 2 SD, und 99.7% im Bereich x̄ ± 3 SD.
+    </div>
+  </div>
+
+  <h2>Symmetrisch vs. schief verteilt</h2>
+  <p>Nicht alle Daten sind normalverteilt. Es gibt auch <strong>schiefe Verteilungen</strong>:</p>
+
+  <div class="data-grid" style="grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0">
+    <div class="data-cell" style="text-align:left;padding:16px">
+      <div class="label" style="color:var(--correct)">Linksschief (negativ schief)</div>
+      <!-- Bar chart: tall bars on right, short on left -->
+      <svg viewBox="0 0 120 64" style="width:100%;margin:8px 0" aria-label="Linksschiefe Verteilung">
+        <line x1="8" y1="56" x2="116" y2="56" stroke="var(--border)" stroke-width="1"/>
+        <rect x="10" y="50" width="9" height="6"  fill="color-mix(in srgb,var(--correct) 50%,var(--surface))"/>
+        <rect x="22" y="44" width="9" height="12" fill="color-mix(in srgb,var(--correct) 60%,var(--surface))"/>
+        <rect x="34" y="34" width="9" height="22" fill="color-mix(in srgb,var(--correct) 70%,var(--surface))"/>
+        <rect x="46" y="22" width="9" height="34" fill="color-mix(in srgb,var(--correct) 80%,var(--surface))"/>
+        <rect x="58" y="10" width="9" height="46" fill="var(--correct)"/>
+        <rect x="70" y="16" width="9" height="40" fill="color-mix(in srgb,var(--correct) 80%,var(--surface))"/>
+        <rect x="82" y="26" width="9" height="30" fill="color-mix(in srgb,var(--correct) 70%,var(--surface))"/>
+        <rect x="94" y="38" width="9" height="18" fill="color-mix(in srgb,var(--correct) 60%,var(--surface))"/>
+        <rect x="106" y="46" width="9" height="10" fill="color-mix(in srgb,var(--correct) 50%,var(--surface))"/>
+      </svg>
+      <div style="font-size:.82rem;color:var(--muted)">Langer Schweif nach links. Median &gt; Mittelwert.</div>
+    </div>
+    <div class="data-cell" style="text-align:left;padding:16px">
+      <div class="label" style="color:var(--accent)">Normalverteilt (symmetrisch)</div>
+      <!-- Bar chart: symmetric bell shape -->
+      <svg viewBox="0 0 120 64" style="width:100%;margin:8px 0" aria-label="Normalverteilung">
+        <line x1="8" y1="56" x2="116" y2="56" stroke="var(--border)" stroke-width="1"/>
+        <rect x="10" y="50" width="9" height="6"  fill="color-mix(in srgb,var(--accent) 40%,var(--surface))"/>
+        <rect x="22" y="40" width="9" height="16" fill="color-mix(in srgb,var(--accent) 55%,var(--surface))"/>
+        <rect x="34" y="24" width="9" height="32" fill="color-mix(in srgb,var(--accent) 70%,var(--surface))"/>
+        <rect x="46" y="12" width="9" height="44" fill="color-mix(in srgb,var(--accent) 85%,var(--surface))"/>
+        <rect x="58" y="6"  width="9" height="50" fill="var(--accent)"/>
+        <rect x="70" y="12" width="9" height="44" fill="color-mix(in srgb,var(--accent) 85%,var(--surface))"/>
+        <rect x="82" y="24" width="9" height="32" fill="color-mix(in srgb,var(--accent) 70%,var(--surface))"/>
+        <rect x="94" y="40" width="9" height="16" fill="color-mix(in srgb,var(--accent) 55%,var(--surface))"/>
+        <rect x="106" y="50" width="9" height="6"  fill="color-mix(in srgb,var(--accent) 40%,var(--surface))"/>
+      </svg>
+      <div style="font-size:.82rem;color:var(--muted)">Symmetrische Glocke. Median ≈ Mittelwert.</div>
+    </div>
+    <div class="data-cell" style="text-align:left;padding:16px">
+      <div class="label" style="color:var(--ordinal)">Rechtsschief (positiv schief)</div>
+      <!-- Bar chart: tall bars on left, short on right -->
+      <svg viewBox="0 0 120 64" style="width:100%;margin:8px 0" aria-label="Rechtsschiefe Verteilung">
+        <line x1="8" y1="56" x2="116" y2="56" stroke="var(--border)" stroke-width="1"/>
+        <rect x="10" y="6"  width="9" height="50" fill="var(--ordinal)"/>
+        <rect x="22" y="14" width="9" height="42" fill="color-mix(in srgb,var(--ordinal) 80%,var(--surface))"/>
+        <rect x="34" y="26" width="9" height="30" fill="color-mix(in srgb,var(--ordinal) 70%,var(--surface))"/>
+        <rect x="46" y="38" width="9" height="18" fill="color-mix(in srgb,var(--ordinal) 60%,var(--surface))"/>
+        <rect x="58" y="44" width="9" height="12" fill="color-mix(in srgb,var(--ordinal) 55%,var(--surface))"/>
+        <rect x="70" y="48" width="9" height="8"  fill="color-mix(in srgb,var(--ordinal) 50%,var(--surface))"/>
+        <rect x="82" y="50" width="9" height="6"  fill="color-mix(in srgb,var(--ordinal) 45%,var(--surface))"/>
+        <rect x="94" y="52" width="9" height="4"  fill="color-mix(in srgb,var(--ordinal) 40%,var(--surface))"/>
+        <rect x="106" y="54" width="9" height="2" fill="color-mix(in srgb,var(--ordinal) 35%,var(--surface))"/>
+      </svg>
+      <div style="font-size:.82rem;color:var(--muted)">Langer Schweif nach rechts. Median &lt; Mittelwert.</div>
+    </div>
+    <div class="data-cell" style="text-align:left;padding:16px">
+      <div class="label" style="color:var(--wrong)">Bimodal (zweigipfelig)</div>
+      <!-- Bar chart: two peaks -->
+      <svg viewBox="0 0 120 64" style="width:100%;margin:8px 0" aria-label="Bimodale Verteilung">
+        <line x1="8" y1="56" x2="116" y2="56" stroke="var(--border)" stroke-width="1"/>
+        <rect x="10" y="30" width="9" height="26" fill="color-mix(in srgb,var(--wrong) 50%,var(--surface))"/>
+        <rect x="22" y="12" width="9" height="44" fill="color-mix(in srgb,var(--wrong) 75%,var(--surface))"/>
+        <rect x="34" y="6"  width="9" height="50" fill="var(--wrong)"/>
+        <rect x="46" y="20" width="9" height="36" fill="color-mix(in srgb,var(--wrong) 60%,var(--surface))"/>
+        <rect x="58" y="44" width="9" height="12" fill="color-mix(in srgb,var(--wrong) 35%,var(--surface))"/>
+        <rect x="70" y="22" width="9" height="34" fill="color-mix(in srgb,var(--wrong) 60%,var(--surface))"/>
+        <rect x="82" y="8"  width="9" height="48" fill="color-mix(in srgb,var(--wrong) 85%,var(--surface))"/>
+        <rect x="94" y="16" width="9" height="40" fill="color-mix(in srgb,var(--wrong) 65%,var(--surface))"/>
+        <rect x="106" y="36" width="9" height="20" fill="color-mix(in srgb,var(--wrong) 45%,var(--surface))"/>
+      </svg>
+      <div style="font-size:.82rem;color:var(--muted)">Zwei Gipfel. Oft: zwei vermischte Gruppen in einem Datensatz.</div>
+    </div>
+  </div>
+  <div class="callout tip" style="margin-top:4px">
+    <strong>Bimodal – wann kommt das vor?</strong> Wenn man zwei verschiedene Populationen misst und zusammenwirft – z.B. Körpergrössen von Frauen und Männern in einem gemeinsamen Datensatz. Jede Gruppe hat ihr eigenes Zentrum; zusammen entsteht eine zweigipfelige Kurve. Bimodale Daten sind <em>nicht</em> normalverteilt.
+  </div>
+
+  <h2>Warum müssen wir auf Normalverteilung prüfen?</h2>
+  <p>Viele statistische Tests (z.B. der t-Test) setzen voraus, dass die Daten <strong>normalverteilt</strong> sind. Wenn diese Voraussetzung verletzt ist, können die Testergebnisse falsch sein – und man muss auf andere Tests ausweichen.</p>
+
+  <div class="callout">
+    <strong>Faustregel:</strong> Wenn ihr eure Daten erhoben habt, <em>prüft immer zuerst auf Normalverteilung</em>, bevor ihr einen statistischen Test wählt.
+  </div>
+
+  <h2>Der Shapiro-Wilk-Test</h2>
+  <p>Der <strong>Shapiro-Wilk-Test</strong> ist der gebräuchlichste Test auf Normalverteilung für kleine Stichproben (n &lt; 50). Er berechnet einen <strong>p-Wert</strong>:</p>
+
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div style="background:var(--correct-bg);border:1px solid var(--correct);border-radius:var(--radius);padding:14px">
+        <div style="font-weight:700;color:var(--correct);margin-bottom:6px">p ≥ 0.05</div>
+        <p style="font-size:.88rem;margin:0">Kein signifikanter Unterschied zur Normalverteilung → Daten können als normalverteilt angenommen werden. ✓</p>
+      </div>
+      <div style="background:var(--wrong-bg);border:1px solid var(--wrong);border-radius:var(--radius);padding:14px">
+        <div style="font-weight:700;color:var(--wrong);margin-bottom:6px">p &lt; 0.05</div>
+        <p style="font-size:.88rem;margin:0">Signifikante Abweichung von der Normalverteilung → Daten sind <em>nicht</em> normalverteilt. ✗</p>
+      </div>
+    </div>
+    <p style="margin-top:12px;margin-bottom:0;font-size:.88rem;color:var(--muted)">Den p-Wert werden wir im nächsten Modul ausführlich erklären. Hier reicht die Daumenregel: p ≥ 0.05 = normalverteilt.</p>
+  </div>
+
+  <h2>Normalverteilung in Excel prüfen</h2>
+  <p>In der Excel-Vorlage zu dieser Forschungswoche findet ihr bereits einen Shapiro-Wilk-Test. Die Schritte im Überblick:</p>
+  <ol>
+    <li>Öffnet das Excel-File mit den Creme-Daten.</li>
+    <li>Auf dem Blatt «Normalverteilung» seht ihr für jede Creme den Shapiro-Wilk p-Wert.</li>
+    <li>Grüne Felder (p ≥ 0.05): normalverteilt. Rote Felder (p &lt; 0.05): nicht normalverteilt.</li>
+    <li>Diese Information braucht ihr im nächsten Modul, um den richtigen Test zu wählen.</li>
+  </ol>
+
+  <div class="quiz-section">
+    <h2>Wissenscheck</h2>
+
+    <div class="question" id="q4_1">
+      <p class="q-text">1. Was beschreibt die «Normalverteilung»?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q4_1',this,false,'Alle Werte gleich häufig würde eine flache, uniforme Verteilung ergeben – keine Glockenkurve.')"><span class="opt-icon">○</span> Eine Verteilung, bei der alle Werte gleich häufig auftreten</div>
+        <div class="opt" onclick="answerQ('q4_1',this,true,'Richtig! Die Normalverteilung ist symmetrisch mit einem Gipfel in der Mitte – die Glockenkurve.')"><span class="opt-icon">○</span> Eine symmetrische, glockenförmige Verteilung mit den meisten Werten in der Mitte</div>
+        <div class="opt" onclick="answerQ('q4_1',this,false,'Nur ganzzahlige Werte beschreibt eine diskrete Verteilung – die Normalverteilung ist stetig.')"><span class="opt-icon">○</span> Eine Verteilung, bei der nur ganzzahlige Werte vorkommen</div>
+      </div>
+      <div class="feedback" id="q4_1-fb"></div>
+    </div>
+
+    <div class="question" id="q4_2">
+      <p class="q-text">2. Shapiro-Wilk-Test ergibt p = 0.32. Was bedeutet das?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q4_2',this,true,'Richtig! p = 0.32 ist grösser als 0.05 → kein signifikanter Unterschied zur Normalverteilung → normalverteilt.')"><span class="opt-icon">○</span> Die Daten können als normalverteilt angenommen werden (p ≥ 0.05)</div>
+        <div class="opt" onclick="answerQ('q4_2',this,false,'Für p &lt; 0.05 müsste der p-Wert kleiner als 0.05 sein – hier ist er 0.32.')"><span class="opt-icon">○</span> Die Daten sind nicht normalverteilt (p &lt; 0.05)</div>
+        <div class="opt" onclick="answerQ('q4_2',this,false,'p = 0.32 lässt eine klare Aussage zu – man kann normalverteilt annehmen.')"><span class="opt-icon">○</span> Keine Aussage möglich</div>
+      </div>
+      <div class="feedback" id="q4_2-fb"></div>
+    </div>
+
+    <div class="question" id="q4_3">
+      <p class="q-text">3. Bei einer rechtsschiefen Verteilung gilt:</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q4_3',this,false,'Median = Mittelwert gilt bei symmetrischen (normalverteilten) Daten, nicht bei schiefen.')"><span class="opt-icon">○</span> Median = Mittelwert</div>
+        <div class="opt" onclick="answerQ('q4_3',this,true,'Richtig! Bei rechtsschiefer Verteilung zieht der lange Schweif rechts den Mittelwert nach oben – Mittelwert &gt; Median.')"><span class="opt-icon">○</span> Mittelwert &gt; Median</div>
+        <div class="opt" onclick="answerQ('q4_3',this,false,'Median &gt; Mittelwert gilt bei linksschiefer Verteilung – nicht bei rechtsschiefer.')"><span class="opt-icon">○</span> Median &gt; Mittelwert</div>
+      </div>
+      <div class="feedback" id="q4_3-fb"></div>
+    </div>
+
+    <div class="question" id="q4_4">
+      <p class="q-text">4. Warum ist es wichtig, vor einem statistischen Test auf Normalverteilung zu prüfen?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q4_4',this,false,'Die Prüfung ist keine Formalität – sie hat direkte Auswirkungen auf die Wahl des Tests.')"><span class="opt-icon">○</span> Nur als formale Pflicht, hat keine praktische Bedeutung</div>
+        <div class="opt" onclick="answerQ('q4_4',this,true,'Richtig! Viele Tests (z.B. t-Test) setzen Normalverteilung voraus. Wenn diese Voraussetzung verletzt ist, sind die Ergebnisse unzuverlässig.')"><span class="opt-icon">○</span> Viele Tests setzen Normalverteilung voraus – ohne Prüfung riskiert man falsche Testergebnisse</div>
+        <div class="opt" onclick="answerQ('q4_4',this,false,'Normalverteilung ist kein ästhetisches Kriterium.')"><span class="opt-icon">○</span> Weil normalverteilte Daten schöner aussehen</div>
+      </div>
+      <div class="feedback" id="q4_4-fb"></div>
+    </div>
+  </div>
+
+  <div id="m4-gate" style="display:none" class="callout">
+    <strong>Super!</strong> Du verstehst die Normalverteilung. Jetzt zum wichtigsten Kapitel: Signifikanz und Tests!
+    <div class="btn-row" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <button class="btn btn-primary" onclick="completeAndGo(4,5)">→ Modul 5: Signifikanz & Tests</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ MODULE 5: SIGNIFIKANZ ═══════════════ -->
+<section class="module" id="mod5">
+  <div class="module-eyebrow">Modul 5</div>
+  <h1 class="module-title">Signifikanz & statistische Tests</h1>
+  <p class="module-desc">Ist der Unterschied zwischen zwei Gruppen «echt» – oder nur Zufall? Die Antwort liegt im p-Wert.</p>
+
+  <h2>Was heisst «statistisch signifikant»?</h2>
+  <p>Wir vergleichen zwei Gruppen – z.B. die Bewertungen von Creme 1 und Creme 4. Creme 1 hat vielleicht einen höheren Mittelwert. Aber: Könnte dieser Unterschied auch durch <strong>Zufall</strong> entstanden sein, wenn in Wirklichkeit kein Unterschied besteht?</p>
+
+  <div class="callout">
+    <strong>Die Grundidee:</strong> Statistische Tests berechnen, wie wahrscheinlich es wäre, diesen Unterschied (oder einen noch extremeren) zufällig zu beobachten – wenn es eigentlich <em>keinen</em> echten Unterschied gibt.<br><br>
+    Diese Wahrscheinlichkeit ist der <strong>p-Wert</strong>.
+  </div>
+
+  <div class="card">
+    <div class="kurs-label" style="margin-bottom:8px">Der p-Wert erklärt</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div style="background:var(--correct-bg);border:1px solid var(--correct);border-radius:var(--radius);padding:14px">
+        <div style="font-weight:700;color:var(--correct);margin-bottom:6px">p ≥ 0.05</div>
+        <p style="font-size:.88rem;margin:0">Der beobachtete Unterschied könnte gut durch Zufall entstanden sein. <strong>Kein signifikanter Unterschied</strong> nachgewiesen.</p>
+      </div>
+      <div style="background:var(--wrong-bg);border:1px solid var(--wrong);border-radius:var(--radius);padding:14px">
+        <div style="font-weight:700;color:var(--wrong);margin-bottom:6px">p &lt; 0.05</div>
+        <p style="font-size:.88rem;margin:0">Ein solcher Unterschied durch Zufall ist sehr unwahrscheinlich (&lt;5%). <strong>Signifikanter Unterschied</strong> gefunden.</p>
+      </div>
+    </div>
+    <div class="callout tip" style="margin-top:16px;margin-bottom:0">
+      <strong>Wichtiger Hinweis:</strong> p &lt; 0.05 bedeutet nicht, dass der Unterschied gross oder praktisch wichtig ist – nur dass er wahrscheinlich nicht zufällig ist. Und es gibt immer eine 5%-Chance auf einen falsch-positiven Befund!
+    </div>
+  </div>
+
+  <h2>Den richtigen Test wählen</h2>
+  <p>Welcher Test hängt davon ab: (1) Wie viele Gruppen vergleicht ihr? (2) Sind die Daten normalverteilt? (3) Welcher Datentyp?</p>
+
+  <div class="card">
+    <div class="kurs-label" style="margin-bottom:12px">Entscheidungsbaum</div>
+    <div style="background:var(--surface-2);border-radius:var(--radius);padding:16px">
+      <div style="margin-bottom:16px">
+        <div style="font-weight:700;margin-bottom:8px">→ Vergleich zweier Gruppen (metrisch/ordinal)</div>
+        <div style="padding-left:16px">
+          <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--correct);margin-top:6px;flex-shrink:0"></div>
+            <div><strong>Daten normalverteilt:</strong> <span style="color:var(--accent)">t-Test</span><br><span style="font-size:.85rem;color:var(--muted)">Excel: T.TEST() oder Datenanalyse-Werkzeug</span></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--ordinal);margin-top:6px;flex-shrink:0"></div>
+            <div><strong>Daten NICHT normalverteilt:</strong> <span style="color:var(--accent)">Mann-Whitney U-Test</span><br><span style="font-size:.85rem;color:var(--muted)">Nicht-parametrisch, funktioniert ohne Normalverteilung</span></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-weight:700;margin-bottom:8px">→ Vergleich nominaler Häufigkeiten</div>
+        <div style="padding-left:16px">
+          <div style="display:flex;align-items:flex-start;gap:8px">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--nominal);margin-top:6px;flex-shrink:0"></div>
+            <div><strong>Kategorienhäufigkeiten vergleichen:</strong> <span style="color:var(--accent)">Chi²-Test (Chi-Quadrat-Test)</span><br><span style="font-size:.85rem;color:var(--muted)">Beispiel: Gibt es einen Zusammenhang zwischen Geschlecht und Lieblingsfarbe?</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Die drei Tests im Detail</h2>
+
+  <div class="card">
+    <div style="font-weight:700;font-size:1.05rem;margin-bottom:8px;color:var(--accent)">t-Test (Zwei-Stichproben-t-Test)</div>
+    <p><strong>Wann:</strong> Zwei Gruppen vergleichen, metrische Daten, <em>normalverteilt</em></p>
+    <p><strong>Fragestellung:</strong> «Haben Creme 1 und Creme 4 signifikant unterschiedliche Mittelwerte?»</p>
+    <p><strong>In Excel:</strong> Daten → Datenanalyse → t-Test: Zwei Stichproben, Varianzen unbekannt<br>Oder: <code>=T.TEST(Bereich1; Bereich2; 2; 2)</code></p>
+    <div class="callout example" style="margin:8px 0 0">
+      <strong>Creme-Beispiel:</strong> t-Test Creme 1 vs. Creme 4 → p = 0.003 → <strong>signifikanter Unterschied</strong> (p &lt; 0.05)
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-weight:700;font-size:1.05rem;margin-bottom:8px;color:var(--ordinal)">Mann-Whitney U-Test</div>
+    <p><strong>Wann:</strong> Zwei Gruppen vergleichen, ordinale oder nicht-normalverteilte metrische Daten</p>
+    <p><strong>Fragestellung:</strong> «Unterscheiden sich die Bewertungen (Ränge) von Creme 1 und Creme 4?»</p>
+    <p><strong>Ablauf:</strong> Alle Werte beider Gruppen werden gemeinsam in Ränge gebracht. Dann wird verglichen, ob eine Gruppe systematisch höhere Ränge hat.</p>
+    <p><strong>In Excel:</strong> Erfordert ein Zusatz-Makro oder Handberechnung (in eurer Excel-Vorlage bereits vorbereitet).</p>
+    <div class="callout example" style="margin:8px 0 0">
+      <strong>Vorteil:</strong> Funktioniert auch ohne Normalverteilung. Robuster gegenüber Ausreissern.
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-weight:700;font-size:1.05rem;margin-bottom:8px;color:var(--nominal)">Chi²-Test (Chi-Quadrat-Test)</div>
+    <p><strong>Wann:</strong> Nominale Daten, Häufigkeiten in Kategorien vergleichen</p>
+    <p><strong>Fragestellung:</strong> «Gibt es einen Zusammenhang zwischen zwei nominalen Variablen?»</p>
+    <div class="callout example" style="margin:8px 0 0">
+      <strong>Beispiel:</strong> Ihr habt 60 Pflanzen unter zwei Bedingungen beobachtet. 30 Pflanzen mit Dünger: 22 blühten, 8 nicht. 30 Pflanzen ohne Dünger: 14 blühten, 16 nicht. Chi²-Test → p = 0.04 → signifikanter Einfluss des Düngers!
+    </div>
+    <p style="margin-top:8px"><strong>In Excel:</strong> <code>=CHIQU.TEST(Beobachtungsbereich; Erwartungsbereich)</code></p>
+  </div>
+
+  <h2>Anwendung auf die Creme-Studie</h2>
+  <div class="step-box">
+    <div class="step-header">Wie wählen wir den richtigen Test für Creme 1 vs. Creme 4?</div>
+    <div class="step-body">
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-content"><strong>Datentyp bestimmen:</strong> Bewertungsskala 1–9 → ordinal</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-content"><strong>Normalverteilung prüfen:</strong> Shapiro-Wilk-Test aus Modul 4 anschauen</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-content"><strong>Entscheidung:</strong> Ordinale Daten → Mann-Whitney U-Test. Falls Normalverteilung angenommen werden kann und man Mittelwerte vergleichen will → auch t-Test möglich</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">4</div>
+        <div class="step-content"><strong>Ergebnis interpretieren:</strong> p &lt; 0.05 → signifikanter Unterschied. «Creme 1 wird signifikant besser bewertet als Creme 4 (Mann-Whitney U-Test, p = 0.003).»</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Vertrauensintervall (Konfidenzintervall)</h2>
+  <p>Ein p-Wert sagt: «Gibt es einen Unterschied?» Das <strong>Vertrauensintervall</strong> sagt: «Wie gross ist dieser Unterschied – und wie sicher sind wir?»</p>
+
+  <div class="callout">
+    <strong>Grundidee:</strong> Wir haben eine Stichprobe gemessen und daraus einen Mittelwert berechnet. Aber der «wahre» Mittelwert der Gesamtpopulation liegt irgendwo in einem Bereich um unseren Stichprobenmittelwert. Das <strong>95%-Vertrauensintervall</strong> gibt diesen Bereich an: Mit 95%-iger Wahrscheinlichkeit enthält er den echten Wert.
+  </div>
+
+  <div class="card">
+    <div class="kurs-label" style="margin-bottom:8px">Was bedeutet «95%»?</div>
+    <p>Stellt euch vor, ihr wiederholt dasselbe Experiment 100 Mal und berechnet jedes Mal ein 95%-Vertrauensintervall. Dann werden <strong>95 von 100 Intervallen</strong> den wahren Populationswert enthalten – und 5 werden daneben liegen (das unvermeidliche Restrisiko).</p>
+    <div style="background:var(--surface-2);border-radius:var(--radius);padding:16px;margin:12px 0">
+      <svg viewBox="0 0 500 110" style="width:100%;display:block" aria-label="Vertrauensintervall Illustration">
+        <!-- center axis -->
+        <line x1="250" y1="10" x2="250" y2="100" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="250" y="108" text-anchor="middle" fill="var(--accent)" font-size="11" font-family="JetBrains Mono,monospace">wahrer Wert</text>
+        <!-- CI bars: 8 that include the true value (green), 2 that miss (red) -->
+        <!-- row 1: green intervals containing the true value -->
+        <line x1="180" y1="15" x2="330" y2="15" stroke="var(--correct)" stroke-width="3"/>
+        <circle cx="255" cy="15" r="4" fill="var(--correct)"/>
+        <line x1="200" y1="25" x2="310" y2="25" stroke="var(--correct)" stroke-width="3"/>
+        <circle cx="245" cy="25" r="4" fill="var(--correct)"/>
+        <line x1="175" y1="35" x2="340" y2="35" stroke="var(--correct)" stroke-width="3"/>
+        <circle cx="260" cy="35" r="4" fill="var(--correct)"/>
+        <line x1="195" y1="45" x2="305" y2="45" stroke="var(--correct)" stroke-width="3"/>
+        <circle cx="248" cy="45" r="4" fill="var(--correct)"/>
+        <line x1="215" y1="55" x2="325" y2="55" stroke="var(--correct)" stroke-width="3"/>
+        <circle cx="265" cy="55" r="4" fill="var(--correct)"/>
+        <line x1="190" y1="65" x2="295" y2="65" stroke="var(--correct)" stroke-width="3"/>
+        <circle cx="240" cy="65" r="4" fill="var(--correct)"/>
+        <line x1="210" y1="75" x2="320" y2="75" stroke="var(--correct)" stroke-width="3"/>
+        <circle cx="258" cy="75" r="4" fill="var(--correct)"/>
+        <line x1="205" y1="85" x2="315" y2="85" stroke="var(--correct)" stroke-width="3"/>
+        <circle cx="252" cy="85" r="4" fill="var(--correct)"/>
+        <!-- 2 red: miss the true value -->
+        <line x1="270" y1="20" x2="380" y2="20" stroke="var(--wrong)" stroke-width="3"/>
+        <circle cx="320" cy="20" r="4" fill="var(--wrong)"/>
+        <line x1="290" y1="70" x2="400" y2="70" stroke="var(--wrong)" stroke-width="3"/>
+        <circle cx="340" cy="70" r="4" fill="var(--wrong)"/>
+        <!-- labels -->
+        <text x="420" y="23" fill="var(--wrong)" font-size="10" font-family="Source Sans 3,sans-serif">≈ 5%: Treffer verfehlt</text>
+        <text x="420" y="73" fill="var(--wrong)" font-size="10" font-family="Source Sans 3,sans-serif">≈ 5%: Treffer verfehlt</text>
+        <text x="5" y="52" fill="var(--correct)" font-size="10" font-family="Source Sans 3,sans-serif">95%</text>
+        <text x="5" y="62" fill="var(--correct)" font-size="10" font-family="Source Sans 3,sans-serif">treffen</text>
+      </svg>
+      <p style="font-size:.82rem;color:var(--muted);margin:4px 0 0">Jede Linie = ein Vertrauensintervall. Punkt = geschätzter Mittelwert. Grün trifft den wahren Wert, Rot verfehlt ihn.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="kurs-label" style="margin-bottom:8px">Die Formel (für den Mittelwert)</div>
+    <p>Das 95%-Vertrauensintervall für den Mittelwert einer normalverteilten Stichprobe:</p>
+    <div class="highlight-box" style="margin:8px 0;font-size:1rem;text-align:center">
+      KI = x̄ ± 1.96 · (SD / √n)
+    </div>
+    <table style="margin-top:12px">
+      <thead><tr><th>Symbol</th><th>Bedeutung</th></tr></thead>
+      <tbody>
+        <tr><td><code>x̄</code></td><td>Mittelwert der Stichprobe</td></tr>
+        <tr><td><code>1.96</code></td><td>Kritischer Wert für 95% Sicherheit (kommt aus der Normalverteilung)</td></tr>
+        <tr><td><code>SD</code></td><td>Standardabweichung der Stichprobe</td></tr>
+        <tr><td><code>n</code></td><td>Stichprobengrösse</td></tr>
+        <tr><td><code>SD / √n</code></td><td>Standardfehler: wie genau ist unser Mittelwert?</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout example">
+    <strong>Creme-Beispiel:</strong> Die 20 Bewertungen von Creme 1 haben einen Mittelwert x̄ = 7.1 und eine Standardabweichung SD = 1.2.<br><br>
+    Standardfehler = 1.2 / √20 = 1.2 / 4.47 ≈ 0.27<br>
+    95%-Vertrauensintervall = 7.1 ± 1.96 · 0.27 = 7.1 ± 0.53<br><br>
+    → <strong>[6.57 ; 7.63]</strong><br><br>
+    Interpretation: «Wir sind zu 95% sicher, dass der wahre mittlere Creme-1-Wert der Gesamtpopulation zwischen 6.57 und 7.63 liegt.»
+  </div>
+
+  <div class="card">
+    <div class="kurs-label" style="margin-bottom:8px">Was beeinflusst die Breite des Intervalls?</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div style="background:var(--correct-bg);border:1px solid var(--correct);border-radius:var(--radius);padding:14px">
+        <div style="font-weight:700;color:var(--correct);margin-bottom:6px">Schmales Intervall = präzise</div>
+        <ul style="font-size:.88rem;margin:0;padding-left:1.2em">
+          <li>Grosse Stichprobe (↑ n)</li>
+          <li>Kleine Streuung (↓ SD)</li>
+          <li>Niedrigeres Konfidenzniveau (z.B. 90% statt 95%)</li>
+        </ul>
+      </div>
+      <div style="background:var(--wrong-bg);border:1px solid var(--wrong);border-radius:var(--radius);padding:14px">
+        <div style="font-weight:700;color:var(--wrong);margin-bottom:6px">Breites Intervall = unpräzise</div>
+        <ul style="font-size:.88rem;margin:0;padding-left:1.2em">
+          <li>Kleine Stichprobe (↓ n)</li>
+          <li>Grosse Streuung (↑ SD)</li>
+          <li>Höheres Konfidenzniveau (z.B. 99% statt 95%)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-section">
+    <h2>Wissenscheck</h2>
+
+    <div class="question" id="q5_1">
+      <p class="q-text">1. Was bedeutet ein p-Wert von 0.03?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q5_1',this,true,'Richtig! p = 0.03 &lt; 0.05 → der beobachtete Unterschied ist statistisch signifikant.')"><span class="opt-icon">○</span> Der Unterschied ist statistisch signifikant (p &lt; 0.05)</div>
+        <div class="opt" onclick="answerQ('q5_1',this,false,'Für «nicht signifikant» müsste p ≥ 0.05 sein.')"><span class="opt-icon">○</span> Der Unterschied ist nicht signifikant</div>
+        <div class="opt" onclick="answerQ('q5_1',this,false,'3% Unterschied wäre eine inhaltliche Aussage – p-Werte beschreiben Wahrscheinlichkeiten, keine Prozentzahlen von Unterschieden.')"><span class="opt-icon">○</span> Die Gruppen unterscheiden sich um 3%</div>
+      </div>
+      <div class="feedback" id="q5_1-fb"></div>
+    </div>
+
+    <div class="question" id="q5_2">
+      <p class="q-text">2. Zwei Gruppen werden verglichen. Die Daten sind metrisch und normalverteilt. Welcher Test ist angemessen?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q5_2',this,true,'Richtig! t-Test = metrisch + normalverteilt + zwei Gruppen vergleichen.')"><span class="opt-icon">○</span> t-Test</div>
+        <div class="opt" onclick="answerQ('q5_2',this,false,'Mann-Whitney nimmt man bei nicht-normalverteilten oder ordinalen Daten.')"><span class="opt-icon">○</span> Mann-Whitney U-Test</div>
+        <div class="opt" onclick="answerQ('q5_2',this,false,'Chi²-Test wird für nominale Häufigkeiten verwendet, nicht für metrische Gruppenvergleiche.')"><span class="opt-icon">○</span> Chi²-Test</div>
+      </div>
+      <div class="feedback" id="q5_2-fb"></div>
+    </div>
+
+    <div class="question" id="q5_3">
+      <p class="q-text">3. Die Daten sind ordinal und nicht normalverteilt. Zwei Gruppen sollen verglichen werden. Welcher Test?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q5_3',this,false,'Der t-Test setzt Normalverteilung voraus – hier ist die Voraussetzung verletzt.')"><span class="opt-icon">○</span> t-Test</div>
+        <div class="opt" onclick="answerQ('q5_3',this,true,'Richtig! Mann-Whitney U-Test ist ein nicht-parametrischer Test, der ohne Normalverteilung funktioniert.')"><span class="opt-icon">○</span> Mann-Whitney U-Test</div>
+        <div class="opt" onclick="answerQ('q5_3',this,false,'Chi²-Test ist für nominale Häufigkeiten, nicht für Gruppenvergleiche bei ordinalen Daten.')"><span class="opt-icon">○</span> Chi²-Test</div>
+      </div>
+      <div class="feedback" id="q5_3-fb"></div>
+    </div>
+
+    <div class="question" id="q5_4">
+      <p class="q-text">4. p-Wert = 0.001. Was kann man sagen?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q5_4',this,false,'p = 0.001 ist kleiner als 0.05 – das bedeutet signifikant, nicht «kein Unterschied».')"><span class="opt-icon">○</span> Es gibt keinen signifikanten Unterschied</div>
+        <div class="opt" onclick="answerQ('q5_4',this,false,'p-Wert sagt nichts darüber aus, wie gross der Unterschied ist – nur ob er wahrscheinlich real ist.')"><span class="opt-icon">○</span> Der Unterschied beträgt 0.1%</div>
+        <div class="opt" onclick="answerQ('q5_4',this,true,'Richtig! p = 0.001 &lt; 0.05 → hochsignifikanter Unterschied. Die Wahrscheinlichkeit, diesen Unterschied durch Zufall zu sehen, ist nur 0.1%.')"><span class="opt-icon">○</span> Der Unterschied ist statistisch hoch signifikant</div>
+      </div>
+      <div class="feedback" id="q5_4-fb"></div>
+    </div>
+
+    <div class="question" id="q5_5">
+      <p class="q-text">5. Für welche Fragestellung ist der Chi²-Test geeignet?</p>
+      <div class="options">
+        <div class="opt" onclick="answerQ('q5_5',this,false,'Mittelwertvergleiche macht man mit t-Test oder Mann-Whitney, nicht Chi².')"><span class="opt-icon">○</span> Vergleich der Mittelwerte zweier Gruppen</div>
+        <div class="opt" onclick="answerQ('q5_5',this,false,'Standardabweichungsvergleiche sind kein Anwendungsfall des Chi²-Tests.')"><span class="opt-icon">○</span> Test, ob zwei Standardabweichungen gleich sind</div>
+        <div class="opt" onclick="answerQ('q5_5',this,true,'Richtig! Chi²-Test prüft, ob zwei nominale Variablen zusammenhängen (z.B. Geschlecht und Lieblingsfarbe).')"><span class="opt-icon">○</span> Prüfen, ob ein Zusammenhang zwischen zwei nominalen Kategorien besteht</div>
+      </div>
+      <div class="feedback" id="q5_5-fb"></div>
+    </div>
+  </div>
+
+  <div id="m5-gate" style="display:none" class="callout">
+    <strong>Fantastisch!</strong> Du beherrschst jetzt alle wichtigen statistischen Konzepte. Jetzt geht's um dein eigenes Projekt!
+    <div class="btn-row" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <button class="btn btn-primary" onclick="completeAndGo(5,6)">→ Modul 6: Mein Forschungsprojekt</button>
+    </div>
+  </div>
+</section>
+<!-- ═══════════════ MODULE 6: PROJEKT ═══════════════ -->
+<section class="module" id="mod6">
+  <div class="module-eyebrow">Modul 6</div>
+  <h1 class="module-title">Mein Forschungsprojekt</h1>
+  <p class="module-desc">Jetzt wendet ihr alles an, was ihr gelernt habt – auf eure eigenen Daten.</p>
+
+  <h2>Schritt 1: Euer Projekt beschreiben</h2>
+  <div class="card">
+    <div style="display:grid;gap:14px">
+      <div>
+        <label style="font-weight:600;font-size:.9rem;display:block;margin-bottom:4px">Projekttitel / Forschungsthema</label>
+        <input type="text" id="proj-title" placeholder="z.B. Wachstum von Tomatenpflanzen unter verschiedenen Lichtbedingungen" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:'Source Sans 3',sans-serif;font-size:.92rem;background:var(--surface);color:var(--text)">
+      </div>
+      <div>
+        <label style="font-weight:600;font-size:.9rem;display:block;margin-bottom:4px">Forschungsfrage</label>
+        <textarea id="proj-question" placeholder="z.B. Wächst Gruppe A (Blaulicht) signifikant schneller als Gruppe B (Weisslicht)?" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:'Source Sans 3',sans-serif;font-size:.92rem;resize:vertical;min-height:80px;background:var(--surface);color:var(--text)"></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="font-weight:600;font-size:.9rem;display:block;margin-bottom:4px">Unabhängige Variable (UV)</label>
+          <input type="text" id="proj-uv" placeholder="z.B. Lichtfarbe (Blau / Weiss)" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:'Source Sans 3',sans-serif;font-size:.92rem;background:var(--surface);color:var(--text)">
+        </div>
+        <div>
+          <label style="font-weight:600;font-size:.9rem;display:block;margin-bottom:4px">Abhängige Variable (AV)</label>
+          <input type="text" id="proj-av" placeholder="z.B. Pflanzenwachstum in cm" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:'Source Sans 3',sans-serif;font-size:.92rem;background:var(--surface);color:var(--text)">
+        </div>
+      </div>
+      <div>
+        <label style="font-weight:600;font-size:.9rem;display:block;margin-bottom:4px">Datentyp der abhängigen Variable</label>
+        <select id="proj-dtype" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:'Source Sans 3',sans-serif;font-size:.92rem;background:var(--surface);color:var(--text)" onchange="updateProjectResult()">
+          <option value="">-- Datentyp wählen --</option>
+          <option value="nominal">Nominal (z.B. Kategorien, Farben)</option>
+          <option value="ordinal">Ordinal (z.B. Bewertungsskala, Schulnoten)</option>
+          <option value="metric">Metrisch (z.B. cm, g, °C)</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-weight:600;font-size:.9rem;display:block;margin-bottom:4px">Normalverteilt? (Shapiro-Wilk-Test in Excel)</label>
+        <select id="proj-normal" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:'Source Sans 3',sans-serif;font-size:.92rem;background:var(--surface);color:var(--text)" onchange="updateProjectResult()">
+          <option value="">-- Ergebnis wählen --</option>
+          <option value="yes">Ja, normalverteilt (p ≥ 0.05)</option>
+          <option value="no">Nein, nicht normalverteilt (p &lt; 0.05)</option>
+          <option value="na">Nicht anwendbar (nominale Daten)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="proj-recommendation" style="display:none" class="callout">
+    <div id="proj-rec-text"></div>
+  </div>
+
+  <h2>Schritt 2: Analyse-Checkliste</h2>
+  <p>Hakt die Punkte ab, wenn ihr sie in Excel erledigt habt:</p>
+  <div class="card" id="checklist">
+    <div class="check-item" onclick="toggleCheck(this)">
+      <span class="check-box">☐</span>
+      <span>Daten vollständig eingegeben und auf Tippfehler geprüft</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)" style="margin-top:10px">
+      <span class="check-box">☐</span>
+      <span>Lageparameter berechnet (Modalwert, Median, Mittelwert je nach Datentyp)</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)" style="margin-top:10px">
+      <span class="check-box">☐</span>
+      <span>Streumasse berechnet (Standardabweichung, Boxplot je nach Datentyp)</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)" style="margin-top:10px">
+      <span class="check-box">☐</span>
+      <span>Normalverteilung geprüft (Shapiro-Wilk-Test, falls metrisch/ordinal)</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)" style="margin-top:10px">
+      <span class="check-box">☐</span>
+      <span>Den richtigen statistischen Test gewählt und durchgeführt</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)" style="margin-top:10px">
+      <span class="check-box">☐</span>
+      <span>p-Wert interpretiert (signifikant oder nicht signifikant?)</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)" style="margin-top:10px">
+      <span class="check-box">☐</span>
+      <span>Ergebnis in einem Satz formuliert (mit Testname und p-Wert)</span>
+    </div>
+  </div>
+
+  <h2>Schritt 3: Ergebnis formulieren</h2>
+  <div class="callout example">
+    <strong>Vorlage für eure Formulierung:</strong><br><br>
+    «[Variable A] und [Variable B] unterscheiden sich [signifikant / nicht signifikant] voneinander ([Testname], p = [Wert]).»<br><br>
+    <strong>Beispiel:</strong> «Creme 1 und Creme 4 unterscheiden sich signifikant in ihren Bewertungen (Mann-Whitney U-Test, p = 0.003). Creme 1 erhält deutlich höhere Bewertungen (Median = 7) als Creme 4 (Median = 4).»
+  </div>
+
+  <div class="card">
+    <label style="font-weight:700;font-size:1rem;display:block;margin-bottom:10px">Eure Ergebnisformulierung:</label>
+    <textarea id="proj-result" placeholder="Schreibt hier eure Ergebnisformulierung..." style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:'Source Sans 3',sans-serif;font-size:.92rem;resize:vertical;min-height:100px;background:var(--surface);color:var(--text)"></textarea>
+  </div>
+
+  <div class="callout" style="margin-top:32px;border-left-color:var(--correct)">
+    <strong>🎉 Herzlichen Glückwunsch!</strong><br><br>
+    Ihr habt alle 6 Module der Statistik-Werkzeugkiste absolviert! Ihr könnt jetzt:<br>
+    <ul style="margin-top:8px">
+      <li>Daten als nominal, ordinal oder metrisch klassifizieren</li>
+      <li>Lageparameter und Streumasse berechnen und interpretieren</li>
+      <li>Normalverteilung testen</li>
+      <li>Den richtigen statistischen Test wählen und p-Werte interpretieren</li>
+      <li>Eure eigene Forschungsfrage statistisch beantworten</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<script>
+// ─── Module data ──────────────────────────────────────────────────────────────
+const MODULES = [
+  { id: 'mod0', label: 'Einführung', quiz: [] },
+  { id: 'mod1', label: 'Datentypen', quiz: ['q1_1','q1_2','q1_3','q1_4','q1_5'], gate: 'm1-gate' },
+  { id: 'mod2', label: 'Lageparameter', quiz: ['q2_1','q2_2','q2_3','q2_4','q2_5'], gate: 'm2-gate' },
+  { id: 'mod3', label: 'Streuung', quiz: ['q3_1','q3_2','q3_3','q3_4','q3_5'], gate: 'm3-gate' },
+  { id: 'mod4', label: 'Normalverteilung', quiz: ['q4_1','q4_2','q4_3','q4_4'], gate: 'm4-gate' },
+  { id: 'mod5', label: 'Signifikanz & Tests', quiz: ['q5_1','q5_2','q5_3','q5_4','q5_5'], gate: 'm5-gate' },
+  { id: 'mod6', label: 'Mein Projekt', quiz: [] },
+];
+
+const completed = new Set([0]); // mod0 auto-complete
+let current = 0;
+const quizAnswers = {}; // qid -> {answered, correct}
+
+// ─── Sort exercise data ───────────────────────────────────────────────────────
+const SORT_ITEMS = [
+  { label: 'Blutgruppe (A/B/AB/0)', correct: 'nominal' },
+  { label: 'Lieblingsfarbe', correct: 'nominal' },
+  { label: 'Wohnort (Stadt/Land)', correct: 'nominal' },
+  { label: 'T-Shirt-Grösse (S/M/L/XL)', correct: 'ordinal' },
+  { label: 'Schulnote (1–6)', correct: 'ordinal' },
+  { label: 'Zufriedenheit (1–5)', correct: 'ordinal' },
+  { label: 'Körpergrösse (cm)', correct: 'metric' },
+  { label: 'Gewicht (kg)', correct: 'metric' },
+  { label: 'Raumtemperatur (°C)', correct: 'metric' },
+];
+
+let selectedChip = null;
+const placed = {}; // label -> zone
+
+// ─── Navigation ───────────────────────────────────────────────────────────────
+function buildNav() {
+  const nav = document.getElementById('navList');
+  nav.innerHTML = '';
+  MODULES.forEach((m, i) => {
+    const div = document.createElement('div');
+    div.className = 'nav-item' +
+      (i === current ? ' active' : '') +
+      (completed.has(i) && i !== current ? ' done' : '') +
+      (i > 0 && !completed.has(i-1) && i !== current ? ' locked' : '');
+    div.innerHTML = `<div class="nav-num">${i}</div><div class="nav-label">${m.label}</div>`;
+    div.onclick = () => { if (!div.classList.contains('locked')) showModule(i); };
+    nav.appendChild(div);
+  });
+  const prog = document.getElementById('prog');
+  prog.style.width = (completed.size / MODULES.length * 100) + '%';
+}
+
+function showModule(n) {
+  document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+  document.getElementById(MODULES[n].id).classList.add('active');
+  current = n;
+  buildNav();
+  window.scrollTo(0, 0);
+}
+
+function completeAndGo(from, to) {
+  completed.add(from);
+  showModule(to);
+}
+
+// ─── Quiz ────────────────────────────────────────────────────────────────────
+function answerQ(qid, el, correct, feedback) {
+  if (quizAnswers[qid]) return; // already answered
+  quizAnswers[qid] = { answered: true, correct };
+  const opts = el.closest('.question').querySelectorAll('.opt');
+  opts.forEach(o => { o.classList.add('disabled'); o.onclick = null; });
+  el.classList.add(correct ? 'correct' : 'wrong');
+  el.querySelector('.opt-icon').textContent = correct ? '✓' : '✗';
+  const fb = document.getElementById(qid + '-fb');
+  fb.textContent = feedback;
+  fb.className = 'feedback show ' + (correct ? 'correct' : 'wrong');
+  // Check gate
+  checkModuleGate();
+}
+
+function checkModuleGate() {
+  const m = MODULES[current];
+  if (!m.quiz || m.quiz.length === 0) return;
+  const answered = m.quiz.filter(q => quizAnswers[q]);
+  if (answered.length < m.quiz.length) return; // not all answered
+  const correct = answered.filter(q => quizAnswers[q].correct).length;
+  const pct = correct / m.quiz.length;
+  if (pct >= 0.8 && m.gate) {
+    const gate = document.getElementById(m.gate);
+    if (gate) gate.style.display = 'block';
+    completed.add(current);
+    buildNav();
+  } else if (answered.length === m.quiz.length && pct < 0.8) {
+    // Show retry hint with option to proceed anyway
+    const gate = document.getElementById(m.gate);
+    if (gate) {
+      gate.style.display = 'block';
+      gate.className = 'callout';
+      gate.style.borderLeftColor = 'var(--wrong)';
+      gate.style.background = 'var(--wrong-bg)';
+      gate.innerHTML = `<strong>Noch nicht ganz!</strong> Du hast ${correct} von ${m.quiz.length} Fragen richtig (mindestens 80% nötig). Lies die Erklärungen nochmals und versuche die falschen Fragen nochmals zu verstehen.<br><br><div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:4px"><button class="btn btn-primary" onclick="completeAndGo(${current},${current+1})">Trotzdem weitergehen →</button></div>`;
+    }
+  }
+}
+
+// ─── Sort exercise ────────────────────────────────────────────────────────────
+function buildSortExercise() {
+  const pool = document.getElementById('chipPool');
+  pool.innerHTML = '';
+  SORT_ITEMS.forEach(item => {
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = item.label;
+    chip.dataset.label = item.label;
+    chip.dataset.correct = item.correct;
+    chip.onclick = () => selectChip(chip);
+    pool.appendChild(chip);
+  });
+}
+
+function selectChip(chip) {
+  if (chip.classList.contains('placed')) return;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  if (selectedChip === chip) { selectedChip = null; return; }
+  chip.classList.add('selected');
+  selectedChip = chip;
+}
+
+function zoneClick(zone) {
+  if (!selectedChip) return;
+  const label = selectedChip.dataset.label;
+  placed[label] = zone;
+  selectedChip.classList.add('placed');
+  selectedChip.classList.remove('selected');
+  // Add to zone
+  const zoneEl = document.getElementById('zone-' + zone);
+  const zoneChip = document.createElement('div');
+  zoneChip.className = 'zone-chip ' + zone[0] + '-chip';
+  zoneChip.textContent = label;
+  zoneChip.dataset.label = label;
+  zoneChip.onclick = () => returnChip(label, zoneChip);
+  zoneEl.appendChild(zoneChip);
+  selectedChip = null;
+}
+
+function returnChip(label, zoneChip) {
+  zoneChip.remove();
+  delete placed[label];
+  // Re-enable original chip
+  const chip = Array.from(document.querySelectorAll('#chipPool .chip')).find(c => c.dataset.label === label);
+  if (chip) chip.classList.remove('placed');
+}
+
+function checkSort() {
+  let correct = 0;
+  const total = SORT_ITEMS.length;
+  SORT_ITEMS.forEach(item => {
+    const userZone = placed[item.label];
+    const zoneChip = document.querySelector(`#zone-${userZone || 'NONE'} .zone-chip[data-label="${item.label}"]`);
+    if (userZone === item.correct) {
+      correct++;
+      if (zoneChip) zoneChip.style.outline = '2px solid var(--correct)';
+    } else {
+      if (zoneChip) zoneChip.style.outline = '2px solid var(--wrong)';
+    }
+  });
+  const fb = document.getElementById('sortFeedback');
+  const notPlaced = total - Object.keys(placed).length;
+  if (notPlaced > 0) {
+    fb.innerHTML = `<div style="color:var(--muted)">⚠ Noch ${notPlaced} Variable(n) nicht zugeordnet.</div>`;
+  } else {
+    fb.innerHTML = `<div style="${correct===total?'color:var(--correct)':'color:var(--wrong)'}"><strong>${correct} von ${total} richtig.</strong> ${
+      correct===total ? '🎉 Perfekt!' : 'Schau dir die markierten Fehler an. Richtige Antworten: Nominal=Blutgruppe,Lieblingsfarbe,Wohnort | Ordinal=T-Shirt-Grösse,Schulnote,Zufriedenheit | Metrisch=Körpergrösse,Gewicht,Temperatur'}</div>`;
+  }
+  fb.style.display = 'block';
+}
+
+// ─── Step reveal ─────────────────────────────────────────────────────────────
+function revealStep(id) {
+  document.getElementById(id).classList.add('show');
+}
+
+// ─── Checklist ───────────────────────────────────────────────────────────────
+function toggleCheck(el) {
+  const box = el.querySelector('.check-box');
+  if (box.textContent === '☐') {
+    box.textContent = '☑';
+    el.style.color = 'var(--correct)';
+  } else {
+    box.textContent = '☐';
+    el.style.color = '';
+  }
+}
+
+// ─── Project advisor ─────────────────────────────────────────────────────────
+function updateProjectResult() {
+  const dtype = document.getElementById('proj-dtype').value;
+  const normal = document.getElementById('proj-normal').value;
+  const rec = document.getElementById('proj-recommendation');
+  const txt = document.getElementById('proj-rec-text');
+  if (!dtype) { rec.style.display = 'none'; return; }
+  let html = '<strong>Empfehlung für euren Test:</strong><br><br>';
+  if (dtype === 'nominal') {
+    html += '📊 Eurer AV ist <strong>nominal</strong>. Lageparameter: Modalwert. Für Gruppenvergleiche: <strong>Chi²-Test</strong> (wenn ihr Häufigkeiten in Kategorien vergleicht).';
+  } else if (dtype === 'ordinal') {
+    html += '📊 Eure AV ist <strong>ordinal</strong>. Lageparameter: Modalwert und Median.<br><br>';
+    html += '→ Für Gruppenvergleiche (zwei Gruppen): <strong>Mann-Whitney U-Test</strong>.';
+  } else if (dtype === 'metric') {
+    if (!normal) {
+      html += '📊 Eure AV ist <strong>metrisch</strong>. Prüft bitte zuerst die Normalverteilung (Shapiro-Wilk in Excel) und wählt dann dieses Feld erneut.';
+    } else if (normal === 'yes') {
+      html += '📊 Eure AV ist <strong>metrisch und normalverteilt</strong>. Lageparameter: Mittelwert + SD.<br><br>';
+      html += '→ Für Gruppenvergleiche (zwei Gruppen): <strong>t-Test (Zwei-Stichproben)</strong>.';
+    } else {
+      html += '📊 Eure AV ist <strong>metrisch, aber nicht normalverteilt</strong>. Lageparameter: Median bevorzugt.<br><br>';
+      html += '→ Für Gruppenvergleiche (zwei Gruppen): <strong>Mann-Whitney U-Test</strong> (robuster ohne Normalverteilung).';
+    }
+  }
+  txt.innerHTML = html;
+  rec.style.display = 'block';
+}
+
+// ─── Theme ────────────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const root = document.documentElement;
+  const cur = root.getAttribute('data-theme');
+  root.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+}
+
+// ─── Init ────────────────────────────────────────────────────────────────────
+buildNav();
+buildSortExercise();
+
+// Style check-items
+document.querySelectorAll('.check-item').forEach(el => {
+  el.style.cssText = 'display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:6px 0;border-bottom:1px solid var(--border)';
+  el.querySelector('.check-box').style.cssText = 'font-size:1.2rem;flex-shrink:0;color:var(--accent)';
+});
+</script>

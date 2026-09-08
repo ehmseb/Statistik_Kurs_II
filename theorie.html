@@ -1,0 +1,587 @@
+<title>Statistik-Theorie NWW</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Source+Sans+3:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+:root {
+  --bg:#F7F9FC; --surface:#FFFFFF; --surface-2:#EBF0F9;
+  --border:#C9D6EA; --text:#1A2842; --muted:#5A7090;
+  --accent:#2C5FA8; --accent-dim:#D0DDF5;
+  --nominal:#4D8F6A; --ordinal:#C97624; --metric:#2C5FA8;
+  --correct:#3C8058; --wrong:#B83232;
+  --correct-bg:#EAF5EF; --wrong-bg:#FDEAEA;
+  --radius:6px;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111A28; --surface:#192338; --surface-2:#1E2C42;
+  --border:#2A3F5C; --text:#DCE8F5; --muted:#7A9ABB;
+  --accent:#4D82D6; --accent-dim:#1C3060;
+  --nominal:#5AAD7E; --ordinal:#D99040; --metric:#4D82D6;
+  --correct:#4DAA78; --wrong:#D95050;
+  --correct-bg:#0E2919; --wrong-bg:#2A0F0F;
+}}
+:root[data-theme="dark"]{
+  --bg:#111A28; --surface:#192338; --surface-2:#1E2C42;
+  --border:#2A3F5C; --text:#DCE8F5; --muted:#7A9ABB;
+  --accent:#4D82D6; --accent-dim:#1C3060;
+  --nominal:#5AAD7E; --ordinal:#D99040; --metric:#4D82D6;
+  --correct:#4DAA78; --wrong:#D95050;
+  --correct-bg:#0E2919; --wrong-bg:#2A0F0F;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Source Sans 3',sans-serif;
+  font-size:16px;line-height:1.7;
+  padding:0;
+}
+.page{
+  max-width:860px;margin:0 auto;padding:48px 40px 72px;
+  background:var(--surface);
+  min-height:100vh;
+}
+/* Cover */
+.cover{
+  border-bottom:3px solid var(--accent);
+  padding-bottom:40px;margin-bottom:48px;
+}
+.kurs-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:12px;
+}
+.cover h1{
+  font-family:'Fraunces',serif;
+  font-size:2.6rem;font-weight:700;line-height:1.1;
+  color:var(--accent);margin-bottom:8px;text-wrap:balance;
+}
+.cover .subtitle{
+  font-size:1.15rem;color:var(--muted);margin-bottom:28px;
+}
+.meta-row{
+  display:flex;flex-wrap:wrap;gap:24px;
+  font-size:.88rem;color:var(--muted);
+}
+.meta-item strong{color:var(--text)}
+
+/* Chapter headings */
+h2.chapter{
+  font-family:'Fraunces',serif;font-size:1.6rem;font-weight:700;
+  color:var(--accent);margin:56px 0 16px;
+  padding-bottom:8px;border-bottom:2px solid var(--accent-dim);
+  text-wrap:balance;
+}
+h3.section{
+  font-family:'Fraunces',serif;font-size:1.2rem;font-weight:600;
+  margin:32px 0 10px;color:var(--text);
+}
+h4{
+  font-family:'Source Sans 3',sans-serif;font-size:1rem;font-weight:700;
+  margin:20px 0 6px;
+}
+p{margin-bottom:12px}
+ul,ol{padding-left:1.5em;margin-bottom:14px}
+li{margin-bottom:5px}
+strong{font-weight:700}
+em{font-style:italic}
+
+/* Boxes */
+.box{
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:18px 22px;margin:18px 0;background:var(--surface);
+}
+.box.definition{
+  border-left:4px solid var(--accent);
+  background:var(--accent-dim);
+}
+.box.example{
+  border-left:4px solid var(--ordinal);
+  background:color-mix(in srgb,var(--ordinal) 8%,var(--surface));
+}
+.box.formula{
+  border-left:4px solid var(--metric);
+  background:color-mix(in srgb,var(--metric) 6%,var(--surface));
+  font-family:'JetBrains Mono',monospace;font-size:.95rem;
+}
+.box.tip{
+  border-left:4px solid var(--nominal);
+  background:color-mix(in srgb,var(--nominal) 8%,var(--surface));
+}
+.box-title{font-weight:700;margin-bottom:6px;display:block}
+
+/* Inline code */
+code{
+  font-family:'JetBrains Mono',monospace;font-size:.85em;
+  background:var(--surface-2);padding:2px 6px;border-radius:3px;
+}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+th,td{padding:9px 13px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:var(--surface-2);font-weight:700;font-size:.82rem;
+   text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even) td{background:var(--surface-2)}
+
+/* Type badges */
+.badge{
+  display:inline-flex;align-items:center;
+  padding:2px 9px;border-radius:20px;
+  font-size:.75rem;font-weight:700;
+  font-family:'JetBrains Mono',monospace;letter-spacing:.04em;
+}
+.badge.n{background:color-mix(in srgb,var(--nominal) 15%,var(--surface));color:var(--nominal)}
+.badge.o{background:color-mix(in srgb,var(--ordinal) 15%,var(--surface));color:var(--ordinal)}
+.badge.m{background:color-mix(in srgb,var(--metric) 15%,var(--surface));color:var(--metric)}
+
+/* Math display */
+.math{
+  background:var(--surface-2);border-radius:var(--radius);
+  padding:14px 18px;margin:12px 0;
+  font-family:'JetBrains Mono',monospace;
+  font-size:1rem;text-align:center;
+  letter-spacing:.02em;
+}
+
+/* TOC */
+.toc{
+  background:var(--surface-2);border-radius:var(--radius);
+  padding:20px 28px;margin:32px 0;
+}
+.toc-title{font-weight:700;margin-bottom:14px;font-size:1.05rem}
+.toc ol{margin:0;padding-left:1.4em}
+.toc li{margin-bottom:5px;font-size:.95rem}
+.toc li span{color:var(--muted);font-size:.85rem;margin-left:4px}
+
+/* Print */
+@media print{
+  body{background:#fff}
+  .page{padding:24px 28px}
+  h2.chapter{page-break-before:always}
+  h2.chapter:first-of-type{page-break-before:avoid}
+  .box,.toc,table{page-break-inside:avoid}
+  .no-print{display:none}
+}
+
+/* Theme toggle */
+.theme-btn{
+  position:fixed;top:14px;right:20px;background:var(--surface);
+  border:1px solid var(--border);border-radius:20px;padding:5px 12px;
+  font-size:.78rem;cursor:pointer;color:var(--muted);z-index:200;
+  font-family:'Source Sans 3',sans-serif;
+}
+.theme-btn:hover{color:var(--text)}
+</style>
+
+<button class="theme-btn no-print" onclick="(function(){const r=document.documentElement;const c=r.getAttribute('data-theme');r.setAttribute('data-theme',c==='dark'?'light':c==='light'?'':'dark')})()">🌓 Theme</button>
+
+<div class="page">
+
+<!-- ── COVER ── -->
+<div class="cover">
+  <div class="kurs-label">NWW · KSK Kreuzlingen · Forschungswoche</div>
+  <h1>Statistik –<br>Theoretischer Hintergrund</h1>
+  <p class="subtitle">Begleitdokument zur interaktiven Lerneinheit</p>
+  <div class="meta-row">
+    <div class="meta-item"><strong>Fach:</strong> Naturwissenschaften</div>
+    <div class="meta-item"><strong>Stufe:</strong> Gymnasium</div>
+    <div class="meta-item"><strong>Umfang:</strong> ~4 Unterrichtsstunden</div>
+    <div class="meta-item"><strong>Roter Faden:</strong> Creme-Bewertungsstudie</div>
+  </div>
+</div>
+
+<!-- ── TOC ── -->
+<div class="toc">
+  <div class="toc-title">Inhalt</div>
+  <ol>
+    <li>Datentypen <span>Nominal · Ordinal · Metrisch</span></li>
+    <li>Lageparameter <span>Modalwert · Median · Mittelwert</span></li>
+    <li>Streumasse <span>Standardabweichung · Boxplot · IQR</span></li>
+    <li>Normalverteilung <span>Glockenkurve · Shapiro-Wilk · Schiefe</span></li>
+    <li>Signifikanz & Statistische Tests <span>p-Wert · t-Test · Mann-Whitney · Chi²</span></li>
+    <li>Vertrauensintervall <span>Konfidenzintervall · Standardfehler</span></li>
+    <li>Formelsammlung <span>Schnellübersicht</span></li>
+  </ol>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<h2 class="chapter">1 · Datentypen</h2>
+
+<p>Bevor wir irgendetwas berechnen können, müssen wir wissen, welcher Typ von Daten vorliegt. Der Datentyp legt fest, welche statistischen Operationen erlaubt sind.</p>
+
+<h3 class="section">1.1 Nominale Daten <span class="badge n">NOMINAL</span></h3>
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  Nominale Daten sind Kategorien ohne jede sinnvolle Reihenfolge. Man kann sie benennen und zählen – das ist alles.
+</div>
+<p><strong>Beispiele:</strong> Blutgruppe (A, B, AB, 0) · Augenfarbe · Lieblingsfarbe · Wohnort · Geschlecht</p>
+<p><strong>Erlaubte Operationen:</strong> Zählen der Häufigkeiten (absolute und relative Häufigkeiten)</p>
+<p><strong>Nicht erlaubt:</strong> Rangordnung, Berechnung von Mittelwert oder Median, Abstände</p>
+<div class="box example">
+  <span class="box-title">Creme-Beispiel (nominal)</span>
+  20 Testpersonen werden gefragt: «Welche Creme gefällt euch am besten?» Ergebnis: Creme 1 (12×), Creme 3 (5×), Creme 2 (2×), Creme 4 (1×). Diese Angaben sind nominal – man darf nur zählen. Creme 1 «gewinnt», weil sie am häufigsten genannt wird.
+</div>
+
+<h3 class="section">1.2 Ordinale Daten <span class="badge o">ORDINAL</span></h3>
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  Ordinale Daten haben eine sinnvolle Reihenfolge (Rangordnung). Die <em>Abstände</em> zwischen den Kategorien sind jedoch nicht gleich gross oder definierbar.
+</div>
+<p><strong>Beispiele:</strong> Schulnoten (1–6) · Bewertungsskalen (1–9) · T-Shirt-Grössen (S, M, L, XL) · Platzierungen</p>
+<p><strong>Erlaubte Operationen:</strong> Zählen, Rangordnung, Modalwert, Median</p>
+<p><strong>Nicht erlaubt:</strong> Differenzen bilden, Mittelwert (streng genommen)</p>
+<div class="box example">
+  <span class="box-title">Creme-Beispiel (ordinal)</span>
+  Die Bewertungen der Cremes auf einer Skala 1–9 sind ordinal. «7 ist besser als 4» stimmt. Ob aber die Steigerung von 4 auf 7 «gleich gross» ist wie von 6 auf 9 – das wissen wir nicht. Deshalb ist die Standardabweichung für ordinale Daten streng genommen nicht erlaubt (in der Praxis aber oft berechnet und deklariert).
+</div>
+
+<h3 class="section">1.3 Metrische Daten <span class="badge m">METRISCH</span></h3>
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  Metrische Daten sind «echte» Zahlen, bei denen alle Abstände definiert und gleich sind. Man darf mit ihnen frei rechnen.
+</div>
+<p><strong>Beispiele:</strong> Körpergrösse (cm) · Temperatur (°C) · Zeit (s) · Volumen (ml) · pH-Wert</p>
+<p><strong>Erlaubte Operationen:</strong> Alle – Zählen, Rangordnung, Median, Mittelwert, Standardabweichung, Verhältnisse</p>
+<div class="box example">
+  <span class="box-title">Creme-Beispiel (metrisch)</span>
+  Man lässt eine Creme 30 Sekunden einwirken und misst das Volumen des entstandenen Schaums (ml). Creme A: 45 ml, Creme B: 28 ml. Der Unterschied 45 − 28 = 17 ml ist exakt definiert – diese Messung ist metrisch.
+</div>
+
+<h3 class="section">1.4 Übersicht</h3>
+<table>
+  <thead><tr><th>Eigenschaft</th><th>Nominal</th><th>Ordinal</th><th>Metrisch</th></tr></thead>
+  <tbody>
+    <tr><td>Kategorien benennbar</td><td>✓</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Rangordnung möglich</td><td>✗</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Abstände gleich gross</td><td>✗</td><td>✗</td><td>✓</td></tr>
+    <tr><td>Rechnen erlaubt</td><td>✗</td><td>✗</td><td>✓</td></tr>
+    <tr><td>Modalwert erlaubt</td><td>✓</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Median erlaubt</td><td>✗</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Mittelwert erlaubt</td><td>✗</td><td>✗*</td><td>✓</td></tr>
+    <tr><td>Standardabweichung erlaubt</td><td>✗</td><td>✗*</td><td>✓</td></tr>
+  </tbody>
+</table>
+<p style="font-size:.85rem;color:var(--muted)">* In der Forschungspraxis wird bei Likert-Skalen (z.B. 1–7) oft trotzdem Mittelwert und SD berechnet und angegeben. Dies ist diskutiert und sollte im Methodenteil erwähnt werden.</p>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<h2 class="chapter">2 · Lageparameter</h2>
+
+<p>Lageparameter (auch: Lagemasse) sind Kennzahlen, die die «Lage» oder «Mitte» einer Datenmenge beschreiben. Sie fassen viele Zahlen zu einer einzigen zusammen.</p>
+
+<h3 class="section">2.1 Modalwert (Modus)</h3>
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  Der Modalwert ist der Wert, der in einem Datensatz am häufigsten vorkommt.
+</div>
+<div class="box example">
+  <strong>Beispiel:</strong> Datensatz: 2, 4, 6, 6, 8, 8, 8<br>
+  Häufigkeiten: 2→1×, 4→1×, 6→2×, <strong>8→3×</strong> ← Modalwert = 8
+</div>
+<p><strong>Vorteile:</strong> Kein Rechnen nötig, funktioniert bei allen Datentypen (auch nominal), nicht empfindlich gegenüber Ausreissern.</p>
+<p><strong>Nachteile:</strong> Es kann mehrere Modi geben (bimodale Verteilung). Sagt nichts über andere Werte aus.</p>
+
+<h3 class="section">2.2 Median</h3>
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  Der Median ist der Wert, der genau in der Mitte liegt, wenn alle Werte der Grösse nach sortiert werden. 50% der Werte liegen darunter, 50% darüber.
+</div>
+<p><strong>Berechnung bei ungerader Anzahl n:</strong></p>
+<div class="math">Position des Medians = (n + 1) / 2</div>
+<p><strong>Berechnung bei gerader Anzahl n:</strong> Durchschnitt der beiden mittleren Werte:</p>
+<div class="math">Median = (Wert an Position n/2 + Wert an Position n/2 + 1) / 2</div>
+<div class="box example">
+  <strong>Beispiel n = 7 (ungerade):</strong><br>
+  Unsortiert: 7, 3, 9, 5, 6, 4, 8<br>
+  Sortiert: 3, 4, 5, <strong>6</strong>, 7, 8, 9 → Position 4 → Median = <strong>6</strong><br><br>
+  <strong>Beispiel n = 8 (gerade):</strong><br>
+  Sortiert: 3, 4, 5, <strong>6, 7</strong>, 8, 9, 10 → Median = (6+7)/2 = <strong>6.5</strong>
+</div>
+<p><strong>Stärke:</strong> Der Median ist <em>robust gegenüber Ausreissern</em>. Ein extrem grosser oder kleiner Wert verändert den Median kaum.</p>
+<p><strong>In Excel:</strong> <code>=MEDIAN(Bereich)</code></p>
+
+<h3 class="section">2.3 Mittelwert (Arithmetisches Mittel)</h3>
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  Der Mittelwert ist die Summe aller Werte, dividiert durch die Anzahl der Werte.
+</div>
+<div class="math">x̄ = (x₁ + x₂ + … + xₙ) / n = (Σxᵢ) / n</div>
+<div class="box example">
+  <strong>Beispiel:</strong> Werte: 2, 4, 6, 6, 8, 8, 8<br>
+  x̄ = (2+4+6+6+8+8+8) / 7 = 42 / 7 = <strong>6.0</strong>
+</div>
+<p><strong>Stärke:</strong> Nutzt alle Informationen im Datensatz, mathematisch genau definiert, Grundlage für viele statistische Tests.</p>
+<p><strong>Schwäche:</strong> Empfindlich gegenüber Ausreissern – ein extrem hoher oder tiefer Wert zieht den Mittelwert stark in seine Richtung (<em>Bill-Gates-Effekt</em>).</p>
+<p><strong>In Excel:</strong> <code>=AVERAGE(Bereich)</code></p>
+
+<h3 class="section">2.4 Wann welchen Lageparameter verwenden?</h3>
+<table>
+  <thead><tr><th>Datentyp</th><th>Empfohlener Lageparameter</th><th>Begründung</th></tr></thead>
+  <tbody>
+    <tr><td><span class="badge n">Nominal</span></td><td>Modalwert</td><td>Einzige sinnvolle Option</td></tr>
+    <tr><td><span class="badge o">Ordinal</span></td><td>Modalwert, Median</td><td>Keine echten Abstände → Mittelwert problematisch</td></tr>
+    <tr><td><span class="badge m">Metrisch</span> ohne Ausreisser</td><td>Mittelwert</td><td>Nutzt alle Informationen</td></tr>
+    <tr><td><span class="badge m">Metrisch</span> mit Ausreissern</td><td>Median</td><td>Robust gegenüber Extremwerten</td></tr>
+  </tbody>
+</table>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<h2 class="chapter">3 · Streumasse</h2>
+
+<p>Streumasse (auch: Dispersionsmasse) beschreiben, wie weit die Werte eines Datensatzes verteilt (gestreut) sind. Zwei Datensätze können denselben Mittelwert haben, sich aber in ihrer Streuung stark unterscheiden.</p>
+
+<h3 class="section">3.1 Standardabweichung (SD)</h3>
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  Die Standardabweichung gibt an, wie weit die Messwerte im Durchschnitt vom Mittelwert entfernt sind.
+</div>
+
+<p><strong>Berechnung (Stichprobe):</strong></p>
+<div class="math">
+  s = √[ Σ(xᵢ − x̄)² / (n − 1) ]
+</div>
+<p>Man teilt durch (n − 1) statt n, weil wir eine <em>Stichprobe</em> analysieren (sog. Bessel'sche Korrektur). In Excel: <code>=STDEV(Bereich)</code></p>
+
+<p><strong>Berechnung Schritt für Schritt</strong> (Datensatz: 2, 4, 6, 6, 8, 8, 8; x̄ = 6):</p>
+<table>
+  <thead><tr><th>Wert (x)</th><th>x − x̄</th><th>(x − x̄)²</th></tr></thead>
+  <tbody>
+    <tr><td>2</td><td>−4</td><td>16</td></tr>
+    <tr><td>4</td><td>−2</td><td>4</td></tr>
+    <tr><td>6</td><td>0</td><td>0</td></tr>
+    <tr><td>6</td><td>0</td><td>0</td></tr>
+    <tr><td>8</td><td>+2</td><td>4</td></tr>
+    <tr><td>8</td><td>+2</td><td>4</td></tr>
+    <tr><td>8</td><td>+2</td><td>4</td></tr>
+    <tr><td><strong>Summe der Quadrate</strong></td><td></td><td><strong>32</strong></td></tr>
+  </tbody>
+</table>
+<p>Varianz = 32 / (7−1) = 5.33 → SD = √5.33 ≈ <strong>2.31</strong></p>
+
+<div class="box tip">
+  <strong>Interpretation:</strong> SD ≈ 2.31 bedeutet, dass die einzelnen Werte im Durchschnitt ca. 2.31 Einheiten vom Mittelwert entfernt sind. Eine kleine SD = einheitliche Daten; eine grosse SD = stark streuende Daten.
+</div>
+
+<h3 class="section">3.2 Varianz</h3>
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  Die Varianz ist das Quadrat der Standardabweichung: s² = Σ(xᵢ − x̄)² / (n − 1)
+</div>
+<p>Die Varianz wird seltener direkt interpretiert (andere Masseinheit: Einheit²). Sie ist mathematisch wichtig als Grundlage für viele Berechnungen. In Excel: <code>=VAR(Bereich)</code></p>
+
+<h3 class="section">3.3 Boxplot und Quartile</h3>
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  Ein Boxplot fasst eine Verteilung mit fünf Kennzahlen zusammen: Minimum, Q1, Median (Q2), Q3, Maximum.
+</div>
+
+<p><strong>Quartile:</strong></p>
+<ul>
+  <li><strong>Q1 (25. Perzentil):</strong> 25% der Werte liegen darunter, 75% darüber.</li>
+  <li><strong>Q2 = Median (50. Perzentil):</strong> 50% darunter, 50% darüber.</li>
+  <li><strong>Q3 (75. Perzentil):</strong> 75% der Werte liegen darunter, 25% darüber.</li>
+</ul>
+
+<p><strong>IQR (Interquartilsabstand):</strong> IQR = Q3 − Q1. Gibt die Breite der mittleren 50% der Daten an.</p>
+
+<p><strong>Ausreisser-Definition:</strong> Werte &lt; Q1 − 1.5 × IQR oder &gt; Q3 + 1.5 × IQR gelten als statistische Ausreisser und werden im Boxplot als separate Punkte dargestellt.</p>
+
+<p><strong>In Excel:</strong> <code>=QUARTILE(Bereich; 1)</code> für Q1, <code>=QUARTILE(Bereich; 3)</code> für Q3</p>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<h2 class="chapter">4 · Normalverteilung</h2>
+
+<h3 class="section">4.1 Die Gauss'sche Glockenkurve</h3>
+<div class="box definition">
+  <span class="box-title">Definition</span>
+  Eine Normalverteilung (Gauss-Verteilung) ist eine symmetrische, glockenförmige Häufigkeitsverteilung. Die meisten Werte liegen in der Nähe des Mittelwerts; je weiter man sich vom Mittelwert entfernt, desto seltener werden die Werte.
+</div>
+
+<p>Sie wird vollständig durch zwei Parameter beschrieben: Mittelwert (μ) und Standardabweichung (σ).</p>
+
+<h3 class="section">4.2 Die 68-95-99.7-Regel (Empirische Regel)</h3>
+<p>Bei einer Normalverteilung gilt:</p>
+<ul>
+  <li><strong>68%</strong> aller Werte liegen im Bereich μ ± 1σ</li>
+  <li><strong>95%</strong> aller Werte liegen im Bereich μ ± 2σ</li>
+  <li><strong>99.7%</strong> aller Werte liegen im Bereich μ ± 3σ</li>
+</ul>
+<div class="box example">
+  <strong>Beispiel Körpergrösse:</strong> Mittelwert μ = 170 cm, SD σ = 10 cm<br>
+  → 68% der Personen haben eine Grösse zwischen 160 cm und 180 cm<br>
+  → 95% zwischen 150 cm und 190 cm<br>
+  → 99.7% zwischen 140 cm und 200 cm
+</div>
+
+<h3 class="section">4.3 Schiefe Verteilungen</h3>
+<table>
+  <thead><tr><th>Verteilungstyp</th><th>Merkmal</th><th>Relation</th></tr></thead>
+  <tbody>
+    <tr><td>Linksschief (negativ schief)</td><td>Langer Schweif nach links; Gipfel rechts</td><td>Median &gt; Mittelwert</td></tr>
+    <tr><td>Symmetrisch (normalverteilt)</td><td>Gleichmässige Glocke</td><td>Median ≈ Mittelwert</td></tr>
+    <tr><td>Rechtsschief (positiv schief)</td><td>Langer Schweif nach rechts; Gipfel links</td><td>Median &lt; Mittelwert</td></tr>
+    <tr><td>Bimodal (zweigipfelig)</td><td>Zwei Häufungspunkte</td><td>Oft zwei vermischte Populationen</td></tr>
+  </tbody>
+</table>
+
+<h3 class="section">4.4 Test auf Normalverteilung</h3>
+<p>Bevor ein parametrischer Test (wie der t-Test) angewendet wird, muss geprüft werden, ob die Daten normalverteilt sind.</p>
+
+<h4>Shapiro-Wilk-Test (empfohlen für n &lt; 50)</h4>
+<p>Der Shapiro-Wilk-Test prüft die Nullhypothese H₀: «Die Daten stammen aus einer normalverteilten Grundgesamtheit.»</p>
+<table>
+  <thead><tr><th>p-Wert</th><th>Interpretation</th><th>Konsequenz</th></tr></thead>
+  <tbody>
+    <tr><td>p ≥ 0.05</td><td>H₀ wird nicht abgelehnt → Normalverteilung annehmbar</td><td>Parametrische Tests erlaubt (z.B. t-Test)</td></tr>
+    <tr><td>p &lt; 0.05</td><td>H₀ wird abgelehnt → signifikante Abweichung von der Normalverteilung</td><td>Nicht-parametrische Tests verwenden (z.B. Mann-Whitney)</td></tr>
+  </tbody>
+</table>
+<p><strong>In R:</strong> <code>shapiro.test(x)</code> · <strong>In Python:</strong> <code>scipy.stats.shapiro(x)</code> · <strong>In Excel:</strong> Nicht eingebaut → Histogramm als visuelle Prüfung</p>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<h2 class="chapter">5 · Signifikanz & Statistische Tests</h2>
+
+<h3 class="section">5.1 Hypothesen und der p-Wert</h3>
+<div class="box definition">
+  <span class="box-title">Nullhypothese H₀ und Alternativhypothese H₁</span>
+  <ul style="margin-top:6px">
+    <li><strong>H₀ (Nullhypothese):</strong> «Es gibt keinen Unterschied» / «Es gibt keinen Zusammenhang»</li>
+    <li><strong>H₁ (Alternativhypothese):</strong> «Es gibt einen Unterschied» / «Es gibt einen Zusammenhang»</li>
+  </ul>
+</div>
+
+<div class="box definition">
+  <span class="box-title">Der p-Wert</span>
+  Der p-Wert ist die Wahrscheinlichkeit, den beobachteten Unterschied (oder einen noch extremeren) zufällig zu erhalten, wenn die Nullhypothese wahr ist.
+</div>
+
+<table>
+  <thead><tr><th>p-Wert</th><th>Interpretation</th><th>Entscheidung</th></tr></thead>
+  <tbody>
+    <tr><td>p ≥ 0.05</td><td>Der Unterschied könnte gut durch Zufall entstanden sein</td><td>H₀ wird nicht abgelehnt → kein signifikanter Unterschied</td></tr>
+    <tr><td>p &lt; 0.05</td><td>Ein solcher Unterschied ist durch Zufall sehr unwahrscheinlich (&lt;5%)</td><td>H₀ wird abgelehnt → signifikanter Unterschied</td></tr>
+    <tr><td>p &lt; 0.01</td><td>Noch unwahrscheinlicher (&lt;1%)</td><td>Hochsignifikanter Unterschied</td></tr>
+    <tr><td>p &lt; 0.001</td><td>Extrem unwahrscheinlich (&lt;0.1%)</td><td>Höchstsignifikanter Unterschied</td></tr>
+  </tbody>
+</table>
+
+<div class="box tip">
+  <strong>Wichtiger Hinweis:</strong> p &lt; 0.05 bedeutet <em>nicht</em>, dass der Unterschied gross oder praktisch bedeutsam ist. Es bedeutet nur, dass er wahrscheinlich nicht zufällig ist. Immer auch die <em>Effektgrösse</em> (z.B. Cohens d) und das Vertrauensintervall berichten.
+</div>
+
+<h3 class="section">5.2 Der t-Test (Zwei-Stichproben-t-Test)</h3>
+<div class="box definition">
+  <span class="box-title">Wann anwenden?</span>
+  Zwei unabhängige Gruppen · Metrische Daten · Normalverteilung in beiden Gruppen
+</div>
+<p><strong>Fragestellung:</strong> «Unterscheiden sich die Mittelwerte zweier Gruppen signifikant?»</p>
+<div class="math">t = (x̄₁ − x̄₂) / √(s₁²/n₁ + s₂²/n₂)</div>
+<p>Je grösser |t|, desto unwahrscheinlicher ist H₀. Der zugehörige p-Wert wird anhand der t-Verteilung mit (n₁ + n₂ − 2) Freiheitsgraden berechnet.</p>
+<p><strong>In Excel:</strong> <code>=T.TEST(Bereich1; Bereich2; 2; 2)</code> (zweiseitig, zwei unabhängige Stichproben)</p>
+<div class="box example">
+  <strong>Creme-Beispiel:</strong> t-Test Creme 1 vs. Creme 4 → p = 0.003 → signifikanter Unterschied (p &lt; 0.05)
+</div>
+
+<h3 class="section">5.3 Mann-Whitney U-Test</h3>
+<div class="box definition">
+  <span class="box-title">Wann anwenden?</span>
+  Zwei unabhängige Gruppen · Ordinale oder nicht-normalverteilte metrische Daten · Kein Normalverteilungstest bestanden
+</div>
+<p><strong>Fragestellung:</strong> «Kommen die Werte einer Gruppe systematisch aus einem höheren/niedrigeren Bereich als die der anderen?»</p>
+<p><strong>Vorgehen:</strong> Alle Werte beider Gruppen werden gemeinsam in Ränge (1, 2, 3, …) gebracht. Dann wird geprüft, ob eine Gruppe systematisch höhere Ränge hat.</p>
+<p><strong>Vorteil:</strong> Nicht-parametrisch – keine Normalverteilungsannahme. Robust gegenüber Ausreissern.</p>
+<p><strong>In R:</strong> <code>wilcox.test(x, y)</code> · <strong>In Python:</strong> <code>scipy.stats.mannwhitneyu(x, y)</code></p>
+
+<h3 class="section">5.4 Chi²-Test (Chi-Quadrat-Test)</h3>
+<div class="box definition">
+  <span class="box-title">Wann anwenden?</span>
+  Nominale Daten · Vergleich von Häufigkeiten in Kategorien · Prüfung auf Zusammenhang zwischen zwei kategorialen Variablen
+</div>
+<p><strong>Fragestellung:</strong> «Gibt es einen statistischen Zusammenhang zwischen zwei nominalen Variablen?»</p>
+<div class="math">χ² = Σ [(beobachtet − erwartet)² / erwartet]</div>
+<p><strong>In Excel:</strong> <code>=CHIQU.TEST(Beobachtungsbereich; Erwartungsbereich)</code></p>
+<div class="box example">
+  <strong>Beispiel:</strong> 60 Pflanzen, zwei Bedingungen (mit/ohne Dünger). Mit Dünger: 22 blühten, 8 nicht. Ohne Dünger: 14 blühten, 16 nicht. Chi²-Test → p = 0.04 → Dünger hat signifikanten Einfluss auf die Blührate.
+</div>
+
+<h3 class="section">5.5 Entscheidungsbaum</h3>
+<table>
+  <thead><tr><th>Situation</th><th>Test</th></tr></thead>
+  <tbody>
+    <tr><td>2 Gruppen, metrische Daten, normalverteilt</td><td>t-Test (Zwei-Stichproben)</td></tr>
+    <tr><td>2 Gruppen, ordinale Daten</td><td>Mann-Whitney U-Test</td></tr>
+    <tr><td>2 Gruppen, metrische Daten, NICHT normalverteilt</td><td>Mann-Whitney U-Test</td></tr>
+    <tr><td>Häufigkeiten in nominalen Kategorien vergleichen</td><td>Chi²-Test</td></tr>
+    <tr><td>3+ Gruppen, metrisch, normalverteilt</td><td>ANOVA (nicht in diesem Kurs)</td></tr>
+  </tbody>
+</table>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<h2 class="chapter">6 · Vertrauensintervall</h2>
+
+<h3 class="section">6.1 Grundidee</h3>
+<p>Ein statistischer Test mit p &lt; 0.05 sagt: «Es gibt wahrscheinlich einen Unterschied.» Das <strong>Vertrauensintervall</strong> (Konfidenzintervall, KI) beantwortet die ergänzende Frage: «Wie gross ist dieser Unterschied – und in welchem Bereich liegt der wahre Wert?»</p>
+
+<div class="box definition">
+  <span class="box-title">Definition: 95%-Vertrauensintervall</span>
+  Würde man dasselbe Experiment 100 Mal wiederholen und jedes Mal ein 95%-KI berechnen, so würden 95 von 100 Intervallen den wahren Populationsparameter enthalten.
+</div>
+
+<h3 class="section">6.2 Formel für den Mittelwert</h3>
+<div class="math">KI₉₅ = x̄ ± 1.96 · (s / √n)</div>
+<table>
+  <thead><tr><th>Symbol</th><th>Bedeutung</th></tr></thead>
+  <tbody>
+    <tr><td><strong>x̄</strong></td><td>Stichprobenmittelwert</td></tr>
+    <tr><td><strong>1.96</strong></td><td>Z-Wert für 95% Konfidenz (aus der Standardnormalverteilung)</td></tr>
+    <tr><td><strong>s</strong></td><td>Stichprobenstandardabweichung</td></tr>
+    <tr><td><strong>n</strong></td><td>Stichprobengrösse</td></tr>
+    <tr><td><strong>s / √n</strong></td><td>Standardfehler des Mittelwerts (SEM)</td></tr>
+  </tbody>
+</table>
+<p>Für andere Konfidenzniveaus: 90% → 1.645 · SE; 99% → 2.576 · SE</p>
+
+<div class="box example">
+  <strong>Creme-Beispiel:</strong><br>
+  Creme 1: x̄ = 7.1, s = 1.2, n = 20<br>
+  Standardfehler = 1.2 / √20 = 1.2 / 4.47 ≈ 0.268<br>
+  Margin of Error = 1.96 × 0.268 ≈ 0.53<br>
+  95%-KI = [7.1 − 0.53 ; 7.1 + 0.53] = <strong>[6.57 ; 7.63]</strong><br><br>
+  Interpretation: «Wir sind zu 95% sicher, dass der wahre mittlere Wert von Creme 1 in der Gesamtpopulation zwischen 6.57 und 7.63 liegt.»
+</div>
+
+<h3 class="section">6.3 Was beeinflusst die Breite des KI?</h3>
+<ul>
+  <li><strong>Grössere Stichprobe (↑ n):</strong> Schmaleres (präziseres) Intervall</li>
+  <li><strong>Kleinere Streuung (↓ s):</strong> Schmaleres Intervall</li>
+  <li><strong>Niedrigeres Konfidenzniveau (z.B. 90% statt 95%):</strong> Schmaleres Intervall, aber weniger sicher</li>
+</ul>
+<div class="box tip">
+  <strong>Breite Vertrauensintervalle</strong> weisen auf eine unsichere Schätzung hin – oft wegen kleiner Stichproben. In solchen Fällen sollte die Stichprobengrösse erhöht werden, bevor Schlussfolgerungen gezogen werden.
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<h2 class="chapter">7 · Formelsammlung</h2>
+
+<table>
+  <thead><tr><th>Grösse</th><th>Formel</th><th>Excel</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Mittelwert</strong></td><td>x̄ = Σxᵢ / n</td><td><code>=AVERAGE()</code></td></tr>
+    <tr><td><strong>Median</strong></td><td>Mittlerer sortierter Wert</td><td><code>=MEDIAN()</code></td></tr>
+    <tr><td><strong>Modalwert</strong></td><td>Häufigster Wert</td><td><code>=MODE()</code></td></tr>
+    <tr><td><strong>Varianz (Stichprobe)</strong></td><td>s² = Σ(xᵢ−x̄)² / (n−1)</td><td><code>=VAR()</code></td></tr>
+    <tr><td><strong>Standardabweichung</strong></td><td>s = √s²</td><td><code>=STDEV()</code></td></tr>
+    <tr><td><strong>IQR</strong></td><td>Q3 − Q1</td><td><code>=QUARTILE(;3)−QUARTILE(;1)</code></td></tr>
+    <tr><td><strong>Standardfehler</strong></td><td>SE = s / √n</td><td><code>=STDEV()/SQRT(COUNT())</code></td></tr>
+    <tr><td><strong>95%-KI Untergrenze</strong></td><td>x̄ − 1.96 · SE</td><td><code>=AVERAGE()−1.96*SE</code></td></tr>
+    <tr><td><strong>95%-KI Obergrenze</strong></td><td>x̄ + 1.96 · SE</td><td><code>=AVERAGE()+1.96*SE</code></td></tr>
+    <tr><td><strong>t-Test (2 Gruppen)</strong></td><td>t = (x̄₁−x̄₂) / √(s₁²/n₁+s₂²/n₂)</td><td><code>=T.TEST(;; 2; 2)</code></td></tr>
+    <tr><td><strong>Chi²-Test</strong></td><td>χ² = Σ[(O−E)²/E]</td><td><code>=CHIQU.TEST()</code></td></tr>
+  </tbody>
+</table>
+
+<div style="margin-top:48px;padding-top:24px;border-top:2px solid var(--border);text-align:center;color:var(--muted);font-size:.85rem">
+  KSK Kreuzlingen · Naturwissenschaftliche Forschungswoche · Statistik-Kurs<br>
+  Dieses Dokument begleitet die interaktive E-Learning-Einheit.
+</div>
+
+</div>
