@@ -1456,15 +1456,226 @@ x̄ = (2+4+6+6+8+8+80) / 7 = 114 / 7 ≈ <strong>16.3</strong> (stark verändert
   </div>
 
   <div id="m5-gate" style="display:none" class="callout">
-    <strong>Fantastisch!</strong> Du beherrschst jetzt alle wichtigen statistischen Konzepte. Jetzt geht's um dein eigenes Projekt!
+    <strong>Fantastisch!</strong> Du beherrschst jetzt alle wichtigen statistischen Konzepte. Als nächstes: Messen und Fehler!
     <div class="btn-row" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
-      <button class="btn btn-primary" onclick="completeAndGo(5,6)">→ Modul 6: Mein Forschungsprojekt</button>
+      <button class="btn btn-primary" onclick="completeAndGo(5,6)">→ Modul 6: Messen &amp; Fehler</button>
     </div>
   </div>
 </section>
-<!-- ═══════════════ MODULE 6: PROJEKT ═══════════════ -->
-<section class="module" id="mod6">
+
+<!-- ═══════════════ MODULE 6: MESSEN & FEHLER ═══════════════ -->
+<section class="module" id="mod_mess">
   <div class="module-eyebrow">Modul 6</div>
+  <h1 class="module-title">Messen &amp; Fehler</h1>
+  <p class="module-desc">Jede Messung ist fehlerbehaftet. Hier lernst du, welche Fehlerarten es gibt, was Richtigkeit und Präzision bedeuten – und wie du Messwerte korrekt rundest.</p>
+
+  <h2>Fehlerarten beim Messen</h2>
+  <p>Beim Messen unterscheiden wir drei grundlegende Fehlerarten:</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:16px 0">
+    <div style="background:#EAF3FA;border-left:4px solid #1D5F8A;border-radius:8px;padding:16px">
+      <div style="font-weight:700;color:#1D5F8A;margin-bottom:6px">Zufällige Fehler</div>
+      <p style="margin:0;font-size:.92rem">Entstehen durch unkontrollierbare Schwankungen: Zittern der Hand, Luftbewegungen, Ableseungenauigkeiten. Streuen zufällig nach oben und unten – <em>nicht</em> vorhersagbar. Werden durch viele Wiederholungen kleiner.</p>
+    </div>
+    <div style="background:#FFF5E6;border-left:4px solid #B25C00;border-radius:8px;padding:16px">
+      <div style="font-weight:700;color:#B25C00;margin-bottom:6px">Systematische Fehler</div>
+      <p style="margin:0;font-size:.92rem">Entstehen durch fehlerhafte Instrumente oder falsche Methoden: falsch kalibrierte Waage, Parallaxe beim Ablesen. Verschieben alle Messwerte in <em>dieselbe Richtung</em>. Wiederholungen helfen nicht.</p>
+    </div>
+    <div style="background:#FDEEEA;border-left:4px solid #A0260D;border-radius:8px;padding:16px">
+      <div style="font-weight:700;color:#A0260D;margin-bottom:6px">Grobe Fehler</div>
+      <p style="margin:0;font-size:.92rem">Entstehen durch Ausrutscher oder Verwechslungen: falsches Gerät, abgelenkter Blick, Vertauschen von Einheiten. Sind <em>Ausreisser</em>, die erkannt und aus der Auswertung entfernt werden müssen.</p>
+    </div>
+  </div>
+
+  <h2>Richtigkeit und Präzision</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0">
+    <div class="card" style="padding:14px">
+      <div style="font-weight:700;font-size:.95rem;margin-bottom:4px">Richtigkeit</div>
+      <p style="margin:0;font-size:.9rem;color:var(--muted)">Wie nah ist der Mittelwert der Messungen am <em>wahren Wert</em>? Hohe Richtigkeit = kein systematischer Fehler.</p>
+    </div>
+    <div class="card" style="padding:14px">
+      <div style="font-weight:700;font-size:.95rem;margin-bottom:4px">Präzision</div>
+      <p style="margin:0;font-size:.9rem;color:var(--muted)">Wie eng liegen die Messwerte <em>beieinander</em>? Hohe Präzision = geringe Streuung, wenige zufällige Fehler.</p>
+    </div>
+  </div>
+
+  <p>Die Zielscheiben zeigen alle vier Kombinationen:</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin:16px 0;text-align:center">
+    <div>
+      <svg viewBox="0 0 120 120" width="100" height="100" style="display:block;margin:0 auto">
+        <circle cx="60" cy="60" r="56" fill="#c0392b"/>
+        <circle cx="60" cy="60" r="44" fill="#e67e22"/>
+        <circle cx="60" cy="60" r="32" fill="#f1c40f"/>
+        <circle cx="60" cy="60" r="20" fill="#27ae60"/>
+        <circle cx="60" cy="60" r="9" fill="white"/>
+        <circle cx="57" cy="58" r="5" fill="#1A2842" opacity=".85"/>
+        <circle cx="63" cy="62" r="5" fill="#1A2842" opacity=".85"/>
+        <circle cx="59" cy="64" r="5" fill="#1A2842" opacity=".85"/>
+        <circle cx="61" cy="56" r="5" fill="#1A2842" opacity=".85"/>
+      </svg>
+      <div style="font-size:.82rem;margin-top:6px;font-weight:600;color:#27ae60">✓ Richtig &amp; Präzise</div>
+      <div style="font-size:.78rem;color:var(--muted)">Ideal: eng + zentriert</div>
+    </div>
+    <div>
+      <svg viewBox="0 0 120 120" width="100" height="100" style="display:block;margin:0 auto">
+        <circle cx="60" cy="60" r="56" fill="#c0392b"/>
+        <circle cx="60" cy="60" r="44" fill="#e67e22"/>
+        <circle cx="60" cy="60" r="32" fill="#f1c40f"/>
+        <circle cx="60" cy="60" r="20" fill="#27ae60"/>
+        <circle cx="60" cy="60" r="9" fill="white"/>
+        <circle cx="30" cy="40" r="5" fill="#1A2842" opacity=".85"/>
+        <circle cx="85" cy="25" r="5" fill="#1A2842" opacity=".85"/>
+        <circle cx="70" cy="90" r="5" fill="#1A2842" opacity=".85"/>
+        <circle cx="40" cy="80" r="5" fill="#1A2842" opacity=".85"/>
+      </svg>
+      <div style="font-size:.82rem;margin-top:6px;font-weight:600;color:#B25C00">✓ Richtig, unpräzise</div>
+      <div style="font-size:.78rem;color:var(--muted)">Mittelwert stimmt, aber Streuung gross</div>
+    </div>
+    <div>
+      <svg viewBox="0 0 120 120" width="100" height="100" style="display:block;margin:0 auto">
+        <circle cx="60" cy="60" r="56" fill="#c0392b"/>
+        <circle cx="60" cy="60" r="44" fill="#e67e22"/>
+        <circle cx="60" cy="60" r="32" fill="#f1c40f"/>
+        <circle cx="60" cy="60" r="20" fill="#27ae60"/>
+        <circle cx="60" cy="60" r="9" fill="white"/>
+        <circle cx="28" cy="28" r="5" fill="#1A2842" opacity=".85"/>
+        <circle cx="34" cy="22" r="5" fill="#1A2842" opacity=".85"/>
+        <circle cx="22" cy="34" r="5" fill="#1A2842" opacity=".85"/>
+        <circle cx="30" cy="32" r="5" fill="#1A2842" opacity=".85"/>
+      </svg>
+      <div style="font-size:.82rem;margin-top:6px;font-weight:600;color:#A0260D">✗ Falsch, präzise</div>
+      <div style="font-size:.78rem;color:var(--muted)">Eng, aber systematisch daneben</div>
+    </div>
+    <div>
+      <svg viewBox="0 0 120 120" width="100" height="100" style="display:block;margin:0 auto">
+        <circle cx="60" cy="60" r="56" fill="#c0392b"/>
+        <circle cx="60" cy="60" r="44" fill="#e67e22"/>
+        <circle cx="60" cy="60" r="32" fill="#f1c40f"/>
+        <circle cx="60" cy="60" r="20" fill="#27ae60"/>
+        <circle cx="60" cy="60" r="9" fill="white"/>
+        <circle cx="25" cy="55" r="5" fill="#1A2842" opacity=".85"/>
+        <circle cx="90" cy="30" r="5" fill="#1A2842" opacity=".85"/>
+        <circle cx="50" cy="95" r="5" fill="#1A2842" opacity=".85"/>
+        <circle cx="80" cy="85" r="5" fill="#1A2842" opacity=".85"/>
+      </svg>
+      <div style="font-size:.82rem;margin-top:6px;font-weight:600;color:#A0260D">✗ Falsch &amp; unpräzise</div>
+      <div style="font-size:.78rem;color:var(--muted)">Weit verteilt, falscher Mittelwert</div>
+    </div>
+  </div>
+
+  <div class="callout example">
+    <strong>Merkhilfe:</strong> Richtigkeit betrifft den <em>Mittelwert</em> (systematischer Fehler), Präzision betrifft die <em>Streuung</em> (zufälliger Fehler). Eine Messung kann beides, keines oder nur eines davon haben.
+  </div>
+
+  <h2>Nachkommastellen &amp; Runden</h2>
+  <p>Wie viele Nachkommastellen darf ein Messergebnis haben? Die Angabe der Stellen hängt vom Messgerät ab:</p>
+  <div class="card">
+    <table style="width:100%;border-collapse:collapse;font-size:.92rem">
+      <thead>
+        <tr style="background:var(--surface-2)">
+          <th style="text-align:left;padding:9px 12px;border-bottom:2px solid var(--border)">Messgerät</th>
+          <th style="text-align:left;padding:9px 12px;border-bottom:2px solid var(--border)">Kleinste Einheit</th>
+          <th style="text-align:left;padding:9px 12px;border-bottom:2px solid var(--border)">Messgenauigkeit</th>
+          <th style="text-align:left;padding:9px 12px;border-bottom:2px solid var(--border)">Beispiel</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border)">Schieblehre</td>
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border)">0,1 mm</td>
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border)">± 0,05 mm</td>
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border)">12,4 mm</td>
+        </tr>
+        <tr style="background:var(--surface-2)">
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border)">Laborwaage</td>
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border)">0,01 g</td>
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border)">± 0,005 g</td>
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border)">3,47 g</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border)">Thermometer</td>
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border)">0,1 °C</td>
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border)">± 0,05 °C</td>
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border)">36,8 °C</td>
+        </tr>
+        <tr style="background:var(--surface-2)">
+          <td style="padding:8px 12px">Massstab</td>
+          <td style="padding:8px 12px">1 mm</td>
+          <td style="padding:8px 12px">± 0,5 mm</td>
+          <td style="padding:8px 12px">145 mm</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout tip" style="margin-top:16px">
+    <strong>Regel: Rechnen mit Messwerten</strong><br>
+    Addition / Subtraktion / Multiplikation / Division: Das Ergebnis hat so viele Nachkommastellen wie die Grösse mit den <em>wenigsten</em> Nachkommastellen.<br>
+    <span style="color:var(--muted);font-size:.9rem">Beispiel: 12,4 mm + 3,1 mm = 15,5 mm (1 Nachkommastelle, nicht 15,50 mm)</span>
+  </div>
+
+  <h2>Quizfragen</h2>
+
+  <div class="question" id="qm_1">
+    <p class="q-text">1. Eine Waage zeigt immer Werte an, die 5 g zu schwer sind. Welcher Fehler liegt vor?</p>
+    <div class="options">
+      <div class="opt" onclick="answerQ('qm_1',this,false,'Zufällige Fehler streuen nach oben und unten – die Abweichung ist hier aber immer gleich gross und in dieselbe Richtung.')"><span class="opt-icon">○</span> Zufälliger Fehler</div>
+      <div class="opt" onclick="answerQ('qm_1',this,true,'Richtig! Die Waage ist systematisch falsch kalibriert – alle Werte sind um denselben Betrag verschoben.')"><span class="opt-icon">○</span> Systematischer Fehler</div>
+      <div class="opt" onclick="answerQ('qm_1',this,false,'Grobe Fehler sind Ausreisser durch Ausrutscher – ein konstant falscher Wert ist aber ein systematischer Fehler.')"><span class="opt-icon">○</span> Grober Fehler</div>
+    </div>
+    <div class="feedback" id="qm_1-fb"></div>
+  </div>
+
+  <div class="question" id="qm_2">
+    <p class="q-text">2. Was bedeutet «hohe Präzision» bei einer Messreihe?</p>
+    <div class="options">
+      <div class="opt" onclick="answerQ('qm_2',this,false,'Das wäre «hohe Richtigkeit» – der Mittelwert stimmt mit dem wahren Wert überein.')"><span class="opt-icon">○</span> Der Mittelwert der Messungen liegt sehr nah am wahren Wert</div>
+      <div class="opt" onclick="answerQ('qm_2',this,true,'Genau! Präzision beschreibt die Enge der Streuung – wie ähnlich sich die Messwiederholungen sind.')"><span class="opt-icon">○</span> Die Messwerte liegen sehr eng beieinander (geringe Streuung)</div>
+      <div class="opt" onclick="answerQ('qm_2',this,false,'Die Anzahl Nachkommastellen beschreibt die Auflösung des Geräts, nicht die Präzision der Messreihe.')"><span class="opt-icon">○</span> Das Messgerät zeigt viele Nachkommastellen an</div>
+    </div>
+    <div class="feedback" id="qm_2-fb"></div>
+  </div>
+
+  <div class="question" id="qm_3">
+    <p class="q-text">3. Du misst mit einem Massstab (Genauigkeit 1 mm). Welche Angabe ist korrekt?</p>
+    <div class="options">
+      <div class="opt" onclick="answerQ('qm_3',this,false,'Mit einem mm-Massstab kann man keine Hundertstel-Millimeter ablesen – die letzte Stelle wäre nur geschätzt.')"><span class="opt-icon">○</span> 145,00 mm</div>
+      <div class="opt" onclick="answerQ('qm_3',this,false,'Zehntel-Millimeter sind mit einem mm-Massstab ebenfalls nicht zuverlässig ablesbar.')"><span class="opt-icon">○</span> 145,0 mm</div>
+      <div class="opt" onclick="answerQ('qm_3',this,true,'Richtig! Der Massstab hat eine Genauigkeit von 1 mm – mehr Nachkommastellen würden falsche Genauigkeit vortäuschen.')"><span class="opt-icon">○</span> 145 mm</div>
+    </div>
+    <div class="feedback" id="qm_3-fb"></div>
+  </div>
+
+  <div class="question" id="qm_4">
+    <p class="q-text">4. Beim Addieren von 3,47 g + 12,4 g – wie viele Nachkommastellen hat das Ergebnis?</p>
+    <div class="options">
+      <div class="opt" onclick="answerQ('qm_4',this,false,'Zwei Nachkommastellen wären falsche Genauigkeit – der Wert 12,4 g hat nur eine Nachkommastelle.')"><span class="opt-icon">○</span> 2 Nachkommastellen (15,87 g)</div>
+      <div class="opt" onclick="answerQ('qm_4',this,true,'Richtig! Das Ergebnis richtet sich nach der Grösse mit den wenigsten Nachkommastellen: 12,4 g → 1 Stelle.')"><span class="opt-icon">○</span> 1 Nachkommastelle (15,9 g)</div>
+      <div class="opt" onclick="answerQ('qm_4',this,false,'Keine Nachkommastellen würden zu viel Information verlieren – 1 Stelle ist korrekt.')"><span class="opt-icon">○</span> 0 Nachkommastellen (16 g)</div>
+    </div>
+    <div class="feedback" id="qm_4-fb"></div>
+  </div>
+
+  <div class="question" id="qm_5">
+    <p class="q-text">5. Wie kannst du zufällige Fehler bei einer Messung reduzieren?</p>
+    <div class="options">
+      <div class="opt" onclick="answerQ('qm_5',this,false,'Ein neues Gerät kann systematische Fehler reduzieren, aber wenn das neue Gerät gleich gut ist, hilft es nicht gegen zufällige Streuung.')"><span class="opt-icon">○</span> Ein anderes Messgerät verwenden</div>
+      <div class="opt" onclick="answerQ('qm_5',this,false,'Die Kalibrierung behebt systematische Fehler, nicht zufällige Schwankungen.')"><span class="opt-icon">○</span> Das Gerät neu kalibrieren</div>
+      <div class="opt" onclick="answerQ('qm_5',this,true,'Genau! Durch viele Wiederholungen und Mittelwertbildung gleichen sich zufällige Fehler gegenseitig aus.')"><span class="opt-icon">○</span> Viele Messwiederholungen durchführen und den Mittelwert berechnen</div>
+    </div>
+    <div class="feedback" id="qm_5-fb"></div>
+  </div>
+
+  <div id="m_mess-gate" style="display:none" class="callout">
+    <strong>Sehr gut!</strong> Du kennst jetzt Fehlerarten, Richtigkeit und Präzision – und rundest Messwerte korrekt. Jetzt geht's zu deinem eigenen Forschungsprojekt!
+    <div class="btn-row" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <button class="btn btn-primary" onclick="completeAndGo(6,7)">→ Modul 7: Mein Forschungsprojekt</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ MODULE 7: PROJEKT ═══════════════ -->
+<section class="module" id="mod6">
+  <div class="module-eyebrow">Modul 7</div>
   <h1 class="module-title">Mein Forschungsprojekt</h1>
   <p class="module-desc">Jetzt wendet ihr alles an, was ihr gelernt habt – auf eure eigenen Daten.</p>
 
@@ -1561,12 +1772,14 @@ x̄ = (2+4+6+6+8+8+80) / 7 = 114 / 7 ≈ <strong>16.3</strong> (stark verändert
 
   <div class="callout" style="margin-top:32px;border-left-color:var(--correct)">
     <strong>🎉 Herzlichen Glückwunsch!</strong><br><br>
-    Ihr habt alle 6 Module der Statistik-Werkzeugkiste absolviert! Ihr könnt jetzt:<br>
+    Ihr habt alle 7 Module der Statistik-Werkzeugkiste absolviert! Ihr könnt jetzt:<br>
     <ul style="margin-top:8px">
       <li>Daten als nominal, ordinal oder metrisch klassifizieren</li>
       <li>Lageparameter und Streumasse berechnen und interpretieren</li>
       <li>Normalverteilung testen</li>
       <li>Den richtigen statistischen Test wählen und p-Werte interpretieren</li>
+      <li>Fehlerarten beim Messen unterscheiden und Richtigkeit von Präzision trennen</li>
+      <li>Messwerte korrekt runden und mit der richtigen Stellenanzahl angeben</li>
       <li>Eure eigene Forschungsfrage statistisch beantworten</li>
     </ul>
   </div>
@@ -1583,6 +1796,7 @@ const MODULES = [
   { id: 'mod3', label: 'Streuung', quiz: ['q3_1','q3_2','q3_3','q3_4','q3_5'], gate: 'm3-gate' },
   { id: 'mod4', label: 'Normalverteilung', quiz: ['q4_1','q4_2','q4_3','q4_4'], gate: 'm4-gate' },
   { id: 'mod5', label: 'Signifikanz & Tests', quiz: ['q5_1','q5_2','q5_3','q5_4','q5_5'], gate: 'm5-gate' },
+  { id: 'mod_mess', label: 'Messen & Fehler', quiz: ['qm_1','qm_2','qm_3','qm_4','qm_5'], gate: 'm_mess-gate' },
   { id: 'mod6', label: 'Mein Projekt', quiz: [] },
 ];
 
