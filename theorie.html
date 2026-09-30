@@ -179,13 +179,13 @@ tr:nth-child(even) td{background:var(--surface-2)}
 
 <!-- ── COVER ── -->
 <div class="cover">
-  <div class="kurs-label">NWW · KSK</div>
+  <div class="kurs-label">NWW · KSK Kreuzlingen · Forschungswoche</div>
   <h1>Statistik –<br>Theoretischer Hintergrund</h1>
   <p class="subtitle">Begleitdokument zur interaktiven Lerneinheit</p>
   <div class="meta-row">
     <div class="meta-item"><strong>Fach:</strong> Naturwissenschaften</div>
-    <div class="meta-item"><strong>Stufe:</strong> Kantonsschule</div>
-    <div class="meta-item"><strong>Umfang:</strong> ~1-2 Unterrichtsstunden</div>
+    <div class="meta-item"><strong>Stufe:</strong> Gymnasium</div>
+    <div class="meta-item"><strong>Umfang:</strong> ~4 Unterrichtsstunden</div>
     <div class="meta-item"><strong>Roter Faden:</strong> Creme-Bewertungsstudie</div>
   </div>
 </div>
@@ -201,6 +201,7 @@ tr:nth-child(even) td{background:var(--surface-2)}
     <li>Signifikanz & Statistische Tests <span>p-Wert · t-Test · Mann-Whitney · Chi²</span></li>
     <li>Vertrauensintervall <span>Konfidenzintervall · Standardfehler</span></li>
     <li>Formelsammlung <span>Schnellübersicht</span></li>
+    <li>Messen &amp; Fehler <span>Fehlerarten · Richtigkeit · Präzision · Runden</span></li>
   </ol>
 </div>
 
@@ -578,6 +579,144 @@ tr:nth-child(even) td{background:var(--surface-2)}
     <tr><td><strong>Chi²-Test</strong></td><td>χ² = Σ[(O−E)²/E]</td><td><code>=CHIQU.TEST()</code></td></tr>
   </tbody>
 </table>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<h2 class="chapter">8 · Messen &amp; Fehler</h2>
+
+<h3>8.1 Fehlerarten</h3>
+<p>Beim wissenschaftlichen Messen unterscheiden wir drei grundlegende Fehlertypen:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Typ 1: Zufällige Fehler</th>
+      <th>Typ 2: Systematische Fehler</th>
+      <th>Typ 3: Grobe Fehler</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Streuen zufällig um den wahren Wert. Entstehen durch Ableseungenauigkeiten, kleine Schwankungen im System, menschliche Variabilität.</td>
+      <td>Verschieben alle Messwerte in dieselbe Richtung. Entstehen durch falsch kalibrierte Geräte, systematische Ablesefehler (z.&nbsp;B. Parallaxe).</td>
+      <td>Einzelne, stark abweichende Werte (Ausreisser). Entstehen durch Flüchtigkeitsfehler, Gerätestörungen, Verwechslungen.</td>
+    </tr>
+    <tr>
+      <td><em>Behebung:</em> Mehrfachmessung, Mittelwertbildung</td>
+      <td><em>Behebung:</em> Kalibrierung, Messprotokoll überprüfen</td>
+      <td><em>Behebung:</em> Ausreisser identifizieren und ggf. ausschliessen</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="box tip">
+  <strong>Merksatz:</strong> Führt mindestens <strong>10 Einzelmessungen</strong> durch (Mehrfachbestimmung), um zufällige Fehler statistisch ausgleichen zu können.
+</div>
+
+<h3>8.2 Richtigkeit und Präzision</h3>
+
+<table>
+  <thead><tr><th>Begriff</th><th>Definition</th><th>Statistisches Mass</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Richtigkeit</strong></td>
+      <td>Wie nahe liegt der <em>Mittelwert</em> am wahren Wert? Beschreibt die Abwesenheit systematischer Fehler.</td>
+      <td>Mittelwert (x̄)</td>
+    </tr>
+    <tr>
+      <td><strong>Präzision</strong></td>
+      <td>Wie eng liegen die Messwerte beieinander? Beschreibt die Reproduzierbarkeit.</td>
+      <td>Standardabweichung (s)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Die vier möglichen Kombinationen lassen sich mit einer Zielscheibe veranschaulichen:</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0">
+  <div style="text-align:center;padding:12px;background:var(--bg-alt,var(--surface));border-radius:8px;border:1px solid var(--border)">
+    <svg viewBox="0 0 80 80" width="80" style="display:block;margin:0 auto 8px">
+      <circle cx="40" cy="40" r="36" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+      <circle cx="40" cy="40" r="24" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+      <circle cx="40" cy="40" r="12" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+      <circle cx="40" cy="40" r="3" fill="var(--accent)" stroke="none"/>
+      <circle cx="38" cy="38" r="3" fill="var(--accent)" stroke="none"/>
+      <circle cx="42" cy="41" r="3" fill="var(--accent)" stroke="none"/>
+      <circle cx="39" cy="42" r="3" fill="var(--accent)" stroke="none"/>
+    </svg>
+    <div style="font-size:.8rem"><strong>Präzise &amp; richtig</strong><br><span style="color:var(--muted)">Eng zusammen, nah am Zentrum</span></div>
+  </div>
+  <div style="text-align:center;padding:12px;background:var(--bg-alt,var(--surface));border-radius:8px;border:1px solid var(--border)">
+    <svg viewBox="0 0 80 80" width="80" style="display:block;margin:0 auto 8px">
+      <circle cx="40" cy="40" r="36" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+      <circle cx="40" cy="40" r="24" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+      <circle cx="40" cy="40" r="12" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+      <circle cx="28" cy="28" r="3" fill="var(--wrong,#e05)" stroke="none"/>
+      <circle cx="30" cy="26" r="3" fill="var(--wrong,#e05)" stroke="none"/>
+      <circle cx="27" cy="30" r="3" fill="var(--wrong,#e05)" stroke="none"/>
+      <circle cx="29" cy="27" r="3" fill="var(--wrong,#e05)" stroke="none"/>
+    </svg>
+    <div style="font-size:.8rem"><strong>Präzise, aber nicht richtig</strong><br><span style="color:var(--muted)">Eng zusammen, aber verschoben (syst. Fehler)</span></div>
+  </div>
+  <div style="text-align:center;padding:12px;background:var(--bg-alt,var(--surface));border-radius:8px;border:1px solid var(--border)">
+    <svg viewBox="0 0 80 80" width="80" style="display:block;margin:0 auto 8px">
+      <circle cx="40" cy="40" r="36" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+      <circle cx="40" cy="40" r="24" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+      <circle cx="40" cy="40" r="12" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+      <circle cx="40" cy="18" r="3" fill="var(--accent)" stroke="none" opacity=".7"/>
+      <circle cx="55" cy="50" r="3" fill="var(--accent)" stroke="none" opacity=".7"/>
+      <circle cx="25" cy="55" r="3" fill="var(--accent)" stroke="none" opacity=".7"/>
+      <circle cx="60" cy="30" r="3" fill="var(--accent)" stroke="none" opacity=".7"/>
+    </svg>
+    <div style="font-size:.8rem"><strong>Richtig, aber nicht präzise</strong><br><span style="color:var(--muted)">Streuen weit, Mittelwert nahe Zentrum</span></div>
+  </div>
+  <div style="text-align:center;padding:12px;background:var(--bg-alt,var(--surface));border-radius:8px;border:1px solid var(--border)">
+    <svg viewBox="0 0 80 80" width="80" style="display:block;margin:0 auto 8px">
+      <circle cx="40" cy="40" r="36" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+      <circle cx="40" cy="40" r="24" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+      <circle cx="40" cy="40" r="12" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+      <circle cx="20" cy="20" r="3" fill="var(--wrong,#e05)" stroke="none" opacity=".7"/>
+      <circle cx="65" cy="55" r="3" fill="var(--wrong,#e05)" stroke="none" opacity=".7"/>
+      <circle cx="30" cy="65" r="3" fill="var(--wrong,#e05)" stroke="none" opacity=".7"/>
+      <circle cx="58" cy="22" r="3" fill="var(--wrong,#e05)" stroke="none" opacity=".7"/>
+    </svg>
+    <div style="font-size:.8rem"><strong>Weder richtig noch präzise</strong><br><span style="color:var(--muted)">Streuen weit, Mittelwert verschoben</span></div>
+  </div>
+</div>
+
+<div class="box tip">
+  <strong>Merke:</strong> Mittelwert (x̄) beschreibt die <strong>Richtigkeit</strong>; Standardabweichung (s) beschreibt die <strong>Präzision</strong>.
+</div>
+
+<h3>8.3 Nachkommastellen und Runden</h3>
+<p>Die Anzahl sinnvoller Nachkommastellen hängt vom verwendeten Messgerät ab:</p>
+
+<table>
+  <thead><tr><th>Messgerät</th><th>Kleinste Einheit</th><th>Nachkommastellen</th><th>Beispiel</th></tr></thead>
+  <tbody>
+    <tr><td>Lineal</td><td>1 mm</td><td>1 (in cm)</td><td>12.3 cm</td></tr>
+    <tr><td>Messzylinder (graduiert)</td><td>1 ml</td><td>0 oder 1</td><td>25 ml oder 24.5 ml</td></tr>
+    <tr><td>Messzylinder (fein)</td><td>0.1 ml</td><td>1</td><td>24.5 ml</td></tr>
+    <tr><td>Digitalwaage</td><td>0.01 g</td><td>2</td><td>12.34 g</td></tr>
+  </tbody>
+</table>
+
+<p><strong>Rundungsregel:</strong></p>
+<ul>
+  <li>Letzte Stelle &lt; 5 → <strong>abrunden</strong> (z.&nbsp;B. 12.34 → 12.3)</li>
+  <li>Letzte Stelle ≥ 5 → <strong>aufrunden</strong> (z.&nbsp;B. 12.35 → 12.4)</li>
+</ul>
+
+<div class="box tip">
+  <strong>Rechnen mit Messwerten:</strong> Führe Rechnungen mit allen Dezimalstellen durch und runde erst das <em>Endergebnis</em>. Zwischenergebnisse nie vorzeitig runden – das führt zu Rundungsfehlern, die sich aufaddieren.
+</div>
+
+<div class="box example">
+  <strong>Beispiel:</strong><br>
+  Gemessene Längen: 12.3 cm, 11.8 cm, 12.5 cm<br>
+  Mittelwert (intern): (12.3 + 11.8 + 12.5) / 3 = 36.6 / 3 = 12.2 cm<br>
+  Gerundet auf 1 Nachkommastelle: <strong>12.2 cm</strong><br><br>
+  <em>Falsch:</em> Erst jeden Wert auf 12 cm runden, dann mitteln → führt zu 12.0 cm (Fehler!)
+</div>
 
 <div style="margin-top:48px;padding-top:24px;border-top:2px solid var(--border);text-align:center;color:var(--muted);font-size:.85rem">
   KSK Kreuzlingen · Naturwissenschaftliche Forschungswoche · Statistik-Kurs<br>

@@ -1000,24 +1000,24 @@ x̄ = (2+4+6+6+8+8+80) / 7 = 114 / 7 ≈ <strong>16.3</strong> (stark verändert
             <stop offset="100%" stop-color="var(--accent)" stop-opacity="0.05"/>
           </linearGradient>
         </defs>
-        <!-- Gaussian curve -->
-        <path d="M 60 155 C 95 155, 130 148, 165 128, 185 113, 205 80, 225 52, 248 28, 280 18, 312 28, 335 52, 355 80, 375 113, 395 128, 430 148, 465 155, 500 155" fill="url(#bellGrad)" stroke="var(--accent)" stroke-width="2.5" fill-opacity="1"/>
+        <!-- Mathematisch korrekte Gausskurve (σ=75, μ=280, Amplitude=135) als dichte Polyline -->
+        <path d="M 60,155 L 60,153 L 80,151 L 100,147 L 120,141 L 140,131 L 160,118 L 180,100 L 200,79 L 210,68 L 220,57 L 230,47 L 240,38 L 250,30 L 260,25 L 270,21 L 280,20 L 290,21 L 300,25 L 310,30 L 320,38 L 330,47 L 340,57 L 350,68 L 360,79 L 380,100 L 400,118 L 420,131 L 440,141 L 460,147 L 480,151 L 500,153 L 500,155 Z" fill="url(#bellGrad)" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
         <!-- Axis line -->
         <line x1="50" y1="155" x2="510" y2="155" stroke="var(--border)" stroke-width="1.5"/>
         <!-- Mean line -->
-        <line x1="280" y1="18" x2="280" y2="155" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5,3"/>
-        <!-- ±1SD lines -->
-        <line x1="210" y1="52" x2="210" y2="155" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3,3"/>
-        <line x1="350" y1="52" x2="350" y2="155" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <line x1="280" y1="20" x2="280" y2="155" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5,3"/>
+        <!-- ±1SD lines at μ±75 = x=205 and x=355 -->
+        <line x1="205" y1="68" x2="205" y2="155" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <line x1="355" y1="68" x2="355" y2="155" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3,3"/>
         <!-- 68% bracket below axis -->
-        <line x1="210" y1="165" x2="350" y2="165" stroke="var(--accent)" stroke-width="2"/>
-        <line x1="210" y1="160" x2="210" y2="170" stroke="var(--accent)" stroke-width="2"/>
-        <line x1="350" y1="160" x2="350" y2="170" stroke="var(--accent)" stroke-width="2"/>
+        <line x1="205" y1="165" x2="355" y2="165" stroke="var(--accent)" stroke-width="2"/>
+        <line x1="205" y1="160" x2="205" y2="170" stroke="var(--accent)" stroke-width="2"/>
+        <line x1="355" y1="160" x2="355" y2="170" stroke="var(--accent)" stroke-width="2"/>
         <text x="280" y="180" text-anchor="middle" fill="var(--accent)" font-size="12" font-family="Source Sans 3, sans-serif" font-weight="600">≈ 68% der Daten</text>
-        <!-- x-axis labels — well spaced, below axis -->
-        <text x="210" y="198" text-anchor="middle" fill="var(--muted)" font-size="11" font-family="JetBrains Mono, monospace">x̄ − SD</text>
+        <!-- x-axis labels -->
+        <text x="205" y="198" text-anchor="middle" fill="var(--muted)" font-size="11" font-family="JetBrains Mono, monospace">x̄ − SD</text>
         <text x="280" y="198" text-anchor="middle" fill="var(--accent)" font-size="12" font-family="JetBrains Mono, monospace" font-weight="700">x̄</text>
-        <text x="350" y="198" text-anchor="middle" fill="var(--muted)" font-size="11" font-family="JetBrains Mono, monospace">x̄ + SD</text>
+        <text x="355" y="198" text-anchor="middle" fill="var(--muted)" font-size="11" font-family="JetBrains Mono, monospace">x̄ + SD</text>
       </svg>
     </div>
     <div class="callout" style="margin-top:16px;margin-bottom:0">
@@ -1034,15 +1034,15 @@ x̄ = (2+4+6+6+8+8+80) / 7 = 114 / 7 ≈ <strong>16.3</strong> (stark verändert
       <!-- Bar chart: tall bars on right, short on left -->
       <svg viewBox="0 0 120 64" style="width:100%;margin:8px 0" aria-label="Linksschiefe Verteilung">
         <line x1="8" y1="56" x2="116" y2="56" stroke="var(--border)" stroke-width="1"/>
-        <rect x="10" y="50" width="9" height="6"  fill="color-mix(in srgb,var(--correct) 50%,var(--surface))"/>
-        <rect x="22" y="44" width="9" height="12" fill="color-mix(in srgb,var(--correct) 60%,var(--surface))"/>
-        <rect x="34" y="34" width="9" height="22" fill="color-mix(in srgb,var(--correct) 70%,var(--surface))"/>
-        <rect x="46" y="22" width="9" height="34" fill="color-mix(in srgb,var(--correct) 80%,var(--surface))"/>
-        <rect x="58" y="10" width="9" height="46" fill="var(--correct)"/>
-        <rect x="70" y="16" width="9" height="40" fill="color-mix(in srgb,var(--correct) 80%,var(--surface))"/>
-        <rect x="82" y="26" width="9" height="30" fill="color-mix(in srgb,var(--correct) 70%,var(--surface))"/>
-        <rect x="94" y="38" width="9" height="18" fill="color-mix(in srgb,var(--correct) 60%,var(--surface))"/>
-        <rect x="106" y="46" width="9" height="10" fill="color-mix(in srgb,var(--correct) 50%,var(--surface))"/>
+        <rect x="10" y="52" width="9" height="4"  fill="color-mix(in srgb,var(--correct) 35%,var(--surface))"/>
+        <rect x="22" y="49" width="9" height="7"  fill="color-mix(in srgb,var(--correct) 45%,var(--surface))"/>
+        <rect x="34" y="44" width="9" height="12" fill="color-mix(in srgb,var(--correct) 55%,var(--surface))"/>
+        <rect x="46" y="36" width="9" height="20" fill="color-mix(in srgb,var(--correct) 65%,var(--surface))"/>
+        <rect x="58" y="24" width="9" height="32" fill="color-mix(in srgb,var(--correct) 75%,var(--surface))"/>
+        <rect x="70" y="10" width="9" height="46" fill="color-mix(in srgb,var(--correct) 90%,var(--surface))"/>
+        <rect x="82" y="6"  width="9" height="50" fill="var(--correct)"/>
+        <rect x="94" y="14" width="9" height="42" fill="color-mix(in srgb,var(--correct) 85%,var(--surface))"/>
+        <rect x="106" y="30" width="9" height="26" fill="color-mix(in srgb,var(--correct) 65%,var(--surface))"/>
       </svg>
       <div style="font-size:.82rem;color:var(--muted)">Langer Schweif nach links. Median &gt; Mittelwert.</div>
     </div>
@@ -1678,6 +1678,15 @@ x̄ = (2+4+6+6+8+8+80) / 7 = 114 / 7 ≈ <strong>16.3</strong> (stark verändert
   <div class="module-eyebrow">Modul 7</div>
   <h1 class="module-title">Mein Forschungsprojekt</h1>
   <p class="module-desc">Jetzt wendet ihr alles an, was ihr gelernt habt – auf eure eigenen Daten.</p>
+
+  <div class="callout" style="margin-bottom:20px">
+    <strong>Unabhängige vs. abhängige Variable</strong><br><br>
+    <strong>Unabhängige Variable (UV)</strong> — die Variable, die ihr aktiv verändert oder in Gruppen aufteilt. Sie <em>beeinflusst</em>.<br>
+    <em style="color:var(--muted);font-size:.9rem">Beispiel: Lichtfarbe (Blau vs. Weiss), Creme-Typ (1/2/3/4)</em><br><br>
+    <strong>Abhängige Variable (AV)</strong> — das, was ihr messt. Sie <em>hängt ab von</em> der UV und wird durch sie beeinflusst.<br>
+    <em style="color:var(--muted);font-size:.9rem">Beispiel: Pflanzenwachstum in cm, Bewertung der Creme (1–9)</em><br><br>
+    <strong>Merkformel:</strong> <code>AV = f(UV)</code> — Die abhängige Variable ist eine Funktion der unabhängigen.
+  </div>
 
   <h2>Schritt 1: Euer Projekt beschreiben</h2>
   <div class="card">
